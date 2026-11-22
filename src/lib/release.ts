@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const REPO = "FarazAhmadNagrami/carryover-app";
+export const REPO = "carryoverapp/carryover";
 export const RELEASES_URL = `https://github.com/${REPO}/releases`;
 export const ISSUES_URL = `https://github.com/${REPO}/issues`;
 
