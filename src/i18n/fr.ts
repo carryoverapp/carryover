@@ -19,6 +19,12 @@ const fr: Dict = {
     worksWith: "Fonctionne avec",
   },
   graph: { memory: "Votre mémoire", carrying: "Une conversation part vers Codex" },
+  tour: {
+    eyebrow: "Regarder",
+    title: "Carryover en 82 secondes",
+    sub: "Toutes les fonctions, du début à la fin. Avec des conversations d'exemple.",
+    play: "Lancer la visite",
+  },
   demo: {
     eyebrow: "Essayez",
     title: "Passez une conversation de Claude à Codex",

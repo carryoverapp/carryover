@@ -4,6 +4,7 @@ import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
 import { DownloadSection, Faq, Footer, Privacy } from "@/components/Sections";
 import { Paths, Sheet, Story } from "@/components/Story";
+import { Tour } from "@/components/Tour";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nProvider } from "@/i18n";
 import { useRelease } from "@/lib/release";
@@ -17,6 +18,7 @@ function Page() {
       <main className="bg-black">
         <Hero release={release} />
         <Sheet>
+          <Tour />
           <Demo />
           <Paths />
           <Story />

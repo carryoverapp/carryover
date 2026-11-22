@@ -19,6 +19,12 @@ const de: Dict = {
     worksWith: "Funktioniert mit",
   },
   graph: { memory: "Dein Gedächtnis", carrying: "Ein Chat wandert zu Codex" },
+  tour: {
+    eyebrow: "Ansehen",
+    title: "Carryover in 82 Sekunden",
+    sub: "Alle Funktionen, von Anfang bis Ende. Mit Beispiel-Chats.",
+    play: "Tour abspielen",
+  },
   demo: {
     eyebrow: "Ausprobieren",
     title: "Nimm einen Chat von Claude zu Codex mit",

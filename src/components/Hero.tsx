@@ -118,7 +118,7 @@ export function Hero({ release }: { release: Release }) {
             </>
           )}
           <Button asChild size="lg" variant="ghost" className="glow-ring h-12 rounded-xl bg-white/[0.03] px-6 text-[15px] font-medium hover:bg-white/[0.07]">
-            <a href="#demo">
+            <a href="#tour">
               {t.hero.see} <ArrowDown />
             </a>
           </Button>

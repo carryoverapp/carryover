@@ -144,7 +144,7 @@ export function DownloadSection({ release }: { release: Release }) {
         </h2>
       </motion.div>
       <motion.div {...reveal} transition={{ ...reveal.transition, delay: 0.1 }} className="mx-auto mt-12 grid max-w-4xl gap-4 md:grid-cols-2">
-        <DownloadCard icon={<WindowsIcon />} title="Windows" desc={d.windowsDesc} href={downloadUrl(ASSETS.windows)} cta={t.hero.windows} soon={d.soon} notes={[d.chrome, d.smartscreen]} />
+        <DownloadCard icon={<WindowsIcon />} title="Windows" desc={d.windowsDesc} href={downloadUrl(ASSETS.windows)} cta={t.hero.windows} soon={d.soon} notes={[]} />
         <DownloadCard icon={<AppleIcon />} title="macOS" desc={d.macDesc} href={release.hasMac ? downloadUrl(ASSETS.mac) : undefined} cta={t.hero.mac} soon={d.soon} notes={[d.gatekeeper]} />
       </motion.div>
       <p className="mt-8 text-center text-sm">

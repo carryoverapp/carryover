@@ -19,6 +19,12 @@ const hi: Dict = {
     worksWith: "इनके साथ काम करता है",
   },
   graph: { memory: "आपकी मेमोरी", carrying: "चैट Codex में जा रही है" },
+  tour: {
+    eyebrow: "देखें",
+    title: "82 सेकंड में Carryover",
+    sub: "हर फ़ीचर, शुरू से आख़िर तक। सैंपल चैट्स के साथ।",
+    play: "वीडियो चलाएँ",
+  },
   demo: {
     eyebrow: "आज़माएँ",
     title: "Claude की चैट Codex में ले जाएँ",

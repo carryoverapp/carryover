@@ -19,6 +19,12 @@ const en = {
     worksWith: "Works with",
   },
   graph: { memory: "Your memory", carrying: "Carrying a chat to Codex" },
+  tour: {
+    eyebrow: "Watch",
+    title: "Carryover in 82 seconds",
+    sub: "Every feature, start to finish. Shown with sample chats.",
+    play: "Play the tour",
+  },
   demo: {
     eyebrow: "Try it",
     title: "Carry a chat from Claude to Codex",

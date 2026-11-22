@@ -19,6 +19,12 @@ const es: Dict = {
     worksWith: "Funciona con",
   },
   graph: { memory: "Tu memoria", carrying: "Llevando un chat a Codex" },
+  tour: {
+    eyebrow: "Mira",
+    title: "Carryover en 82 segundos",
+    sub: "Todas las funciones, de principio a fin. Con chats de ejemplo.",
+    play: "Ver el recorrido",
+  },
   demo: {
     eyebrow: "Pruébalo",
     title: "Lleva un chat de Claude a Codex",
