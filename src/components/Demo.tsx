@@ -2,118 +2,136 @@ import {
   Background,
   BackgroundVariant,
   Handle,
+  MiniMap,
   Position,
   ReactFlow,
   ReactFlowProvider,
   useNodesState,
   useReactFlow,
+  useViewport,
   type Edge,
   type Node,
   type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/base.css";
-import { ArrowRight, Check, Copy, Hand, Maximize, Minus, MousePointerClick, Plus, RotateCcw, Sparkles, X } from "lucide-react";
+import { ArrowRight, ArrowLeftRight, Brain, Check, ChevronDown, Copy, CornerDownRight, Hand, History, LayoutGrid, Maximize, Minus, MousePointerClick, Network, Plus, RotateCcw, Scale, Search, Sparkles, Trophy, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 
-/* ---------- sample graph ---------- */
+/* ---------- sample graph, styled like the app's Memory graph ---------- */
 
 type AppId = "claude" | "chatgpt" | "claude-code" | "codex" | "antigravity";
+/** Same colours as the desktop app (core/graph/build.ts). `at` is the hub's centre. */
 const APPS: Record<AppId, { label: string; color: string; at: [number, number] }> = {
-  claude: { label: "Claude", color: "var(--claude)", at: [140, 250] },
-  "claude-code": { label: "Claude Code", color: "var(--claude-code)", at: [470, 90] },
-  chatgpt: { label: "ChatGPT", color: "var(--chatgpt)", at: [400, 450] },
-  antigravity: { label: "Antigravity", color: "var(--antigravity)", at: [700, 470] },
-  codex: { label: "Codex", color: "var(--codex)", at: [820, 230] },
+  claude: { label: "Claude", color: "#f97316", at: [40, 320] },
+  "claude-code": { label: "Claude Code", color: "#3b82f6", at: [600, 40] },
+  chatgpt: { label: "ChatGPT", color: "#10b981", at: [470, 640] },
+  antigravity: { label: "Antigravity", color: "#ec4899", at: [1000, 660] },
+  codex: { label: "Codex", color: "#8b5cf6", at: [1180, 320] },
 };
 
 const TARGET = "chat-rate";
-const CHATS: { id: string; app: AppId; title: string; msgs: number; angle: number }[] = [
-  { id: TARGET, app: "claude", title: "Rate limiting the API", msgs: 4, angle: 20 },
-  { id: "c2", app: "claude", title: "Trip plan for Lisbon", msgs: 31, angle: 130 },
-  { id: "c3", app: "claude", title: "LoRA fine-tuning plan", msgs: 12, angle: 240 },
-  { id: "cc1", app: "claude-code", title: "SQLite migrations in Rust", msgs: 88, angle: 200 },
-  { id: "cc2", app: "claude-code", title: "Fix flaky login test", msgs: 46, angle: 340 },
-  { id: "g1", app: "chatgpt", title: "Cricket stats notebook", msgs: 23, angle: 160 },
-  { id: "g2", app: "chatgpt", title: "RAG eval pipeline", msgs: 57, angle: 20 },
-  { id: "a1", app: "antigravity", title: "Design tokens for dark mode", msgs: 19, angle: 60 },
-  { id: "x1", app: "codex", title: "Kubernetes ingress setup", msgs: 64, angle: 300 },
-  { id: "x2", app: "codex", title: "React version upgrade", msgs: 39, angle: 70 },
+const CHATS: { id: string; app: AppId; title: string; msgs: number; angle: number; date: string }[] = [
+  { id: TARGET, app: "claude", title: "Rate limiting the API", msgs: 4, angle: 0, date: "2026-11-21" },
+  { id: "c2", app: "claude", title: "Trip plan for Lisbon", msgs: 31, angle: 125, date: "2026-10-02" },
+  { id: "c3", app: "claude", title: "LoRA fine-tuning plan", msgs: 12, angle: 235, date: "2026-11-08" },
+  { id: "cc1", app: "claude-code", title: "SQLite migrations in Rust", msgs: 88, angle: 160, date: "2026-08-14" },
+  { id: "cc2", app: "claude-code", title: "Fix flaky login test", msgs: 46, angle: 20, date: "2026-09-27" },
+  { id: "g1", app: "chatgpt", title: "Cricket stats notebook", msgs: 23, angle: 180, date: "2026-07-19" },
+  { id: "g2", app: "chatgpt", title: "RAG eval pipeline", msgs: 57, angle: 0, date: "2026-11-15" },
+  { id: "a1", app: "antigravity", title: "Design tokens for dark mode", msgs: 19, angle: 90, date: "2026-10-23" },
+  { id: "x1", app: "codex", title: "Kubernetes ingress setup", msgs: 64, angle: 270, date: "2026-09-05" },
+  { id: "x2", app: "codex", title: "React version upgrade", msgs: 39, angle: 90, date: "2026-10-30" },
 ];
-const CHAT_W = 168;
-const CHAT_H = 50;
-const HUB = 64;
+const FIRST_DAY = "2026-07-01";
+const LAST_DAY = "2026-11-21";
+const CHAT_W = 208;
+const CHAT_H = 76;
+const HUB_W = 156;
+const HUB_H = 44;
 
 const chatPos = (app: AppId, angle: number): [number, number] => {
   const [x, y] = APPS[app].at;
   const r = (angle * Math.PI) / 180;
-  return [x + Math.cos(r) * 150 - CHAT_W / 2 + HUB / 2, y + Math.sin(r) * 105 - CHAT_H / 2 + HUB / 2];
+  return [x + Math.cos(r) * 270 - CHAT_W / 2, y + Math.sin(r) * 165 - CHAT_H / 2];
 };
 const home = Object.fromEntries(CHATS.map((c) => [c.id, chatPos(c.app, c.angle)]));
-const COPY_POS = chatPos("codex", 175);
+const COPY_POS = chatPos("codex", 180);
 
 type HubData = { app: AppId };
-type ChatData = { app: AppId; title: string; msgs: number; copy?: boolean };
+type ChatData = { app: AppId; title: string; msgs: number; date: string; copy?: boolean };
 
 /* Shared UI state the custom nodes read. */
-const Live = createContext<{ step: number; dragging: boolean; selected: string | null; t: ReturnType<typeof useI18n>["t"] }>(null!);
+const Live = createContext<{ step: number; dragApp: AppId | null; selected: string | null; cutoff: string }>(null!);
 
 function HubNode({ data }: NodeProps<Node<HubData>>) {
-  const { step, dragging } = useContext(Live);
+  const { step, dragApp } = useContext(Live);
   const app = APPS[data.app];
-  const isTarget = data.app === "codex" && step === 1;
+  const count = CHATS.filter((c) => c.app === data.app).length + (data.app === "codex" && step >= 4 ? 1 : 0);
+  const dropTarget = dragApp !== null && dragApp !== data.app;
   return (
-    <div className="relative flex flex-col items-center" style={{ width: HUB }}>
-      <Handle type="source" position={Position.Top} className="!opacity-0" style={{ top: HUB / 2 }} />
-      <Handle type="target" position={Position.Top} className="!opacity-0" style={{ top: HUB / 2 }} />
-      {isTarget && (
+    <div className="relative" style={{ width: HUB_W }}>
+      <Handle type="source" position={Position.Top} className="!opacity-0" style={{ top: HUB_H / 2 }} />
+      <Handle type="target" position={Position.Top} className="!opacity-0" style={{ top: HUB_H / 2 }} />
+      {data.app === "codex" && step === 1 && (
         <motion.span
-          className="absolute rounded-full"
-          style={{ width: HUB, height: HUB, border: `2px solid ${app.color}` }}
-          animate={{ scale: [1, 1.7], opacity: [0.8, 0] }}
-          transition={{ duration: 1.4, repeat: Infinity }}
+          className="absolute inset-0 rounded-full"
+          style={{ border: `2px solid ${app.color}` }}
+          animate={{ scale: [1, 1.35], opacity: [0.9, 0] }}
+          transition={{ duration: 1.3, repeat: Infinity }}
         />
       )}
-      <motion.div
-        animate={{ scale: dragging ? (data.app === "codex" ? 1.25 : 1.08) : 1 }}
-        className="grid place-items-center rounded-full border-2 bg-card shadow-sm"
-        style={{ width: HUB, height: HUB, borderColor: app.color, boxShadow: dragging ? `0 0 0 6px color-mix(in oklch, ${app.color} 20%, transparent)` : undefined }}
+      <div
+        className={cn(
+          "truncate whitespace-nowrap rounded-full px-5 py-3 text-center text-sm font-semibold text-white shadow-md transition-transform",
+          dropTarget && "scale-110 ring-4 ring-white/70",
+        )}
+        style={{ background: app.color }}
       >
-        <span className="size-5 rounded-full" style={{ background: app.color }} />
-      </motion.div>
-      <span className="mt-2 whitespace-nowrap rounded-full bg-background/80 px-2 text-[13px] font-semibold backdrop-blur">{app.label}</span>
+        {app.label} · {count}
+      </div>
     </div>
   );
 }
 
 function ChatNode({ id, data }: NodeProps<Node<ChatData>>) {
-  const { step, selected, t } = useContext(Live);
+  const { step, selected, cutoff } = useContext(Live);
   const app = APPS[data.app];
   const pulse = id === TARGET && step === 0;
+  const hidden = data.date > cutoff;
   return (
     <div
       className={cn(
-        "relative cursor-grab rounded-xl border bg-card px-3 py-2 shadow-sm transition-shadow active:cursor-grabbing",
+        "relative h-[76px] cursor-grab rounded-md border bg-card px-3 py-2 text-left shadow-sm transition-[opacity,box-shadow] active:cursor-grabbing",
         selected === id && "ring-2 ring-primary",
         data.copy && "border-dashed",
+        hidden && "opacity-15",
       )}
-      style={{ width: CHAT_W, borderLeft: `3px solid ${app.color}` }}
+      style={{ width: CHAT_W, borderColor: app.color, borderLeftWidth: 4 }}
     >
       <Handle type="target" position={Position.Left} className="!opacity-0" />
       <Handle type="source" position={Position.Right} className="!opacity-0" />
       {pulse && (
         <motion.span
-          className="pointer-events-none absolute -inset-1 rounded-[14px] border-2 border-primary"
-          animate={{ opacity: [0.9, 0.2, 0.9] }}
+          className="pointer-events-none absolute -inset-1.5 rounded-lg border-2 border-[#34d399]"
+          animate={{ opacity: [1, 0.25, 1] }}
           transition={{ duration: 1.6, repeat: Infinity }}
         />
       )}
-      <div className="truncate text-[12.5px] font-medium leading-tight">{data.title}</div>
-      <div className="mt-0.5 text-[11px] text-muted-foreground">
-        {data.copy ? `↪ Claude · ${app.label}` : t.demo.messages.replace("{n}", String(data.msgs))}
+      <div className="line-clamp-2 text-xs font-medium">{data.title}</div>
+      <div className="mt-1 truncate text-[10px] text-muted-foreground">
+        {data.copy ? (
+          <span className="inline-flex items-center gap-1">
+            <CornerDownRight className="size-2.5" /> from Claude
+          </span>
+        ) : (
+          <>
+            {data.date} · {data.msgs} msgs
+          </>
+        )}
       </div>
     </div>
   );
@@ -126,7 +144,7 @@ function initialNodes(): Node[] {
     ...(Object.keys(APPS) as AppId[]).map<Node<HubData>>((id) => ({
       id: `hub-${id}`,
       type: "hub",
-      position: { x: APPS[id].at[0], y: APPS[id].at[1] },
+      position: { x: APPS[id].at[0] - HUB_W / 2, y: APPS[id].at[1] - HUB_H / 2 },
       data: { app: id },
       draggable: false,
       selectable: false,
@@ -135,7 +153,7 @@ function initialNodes(): Node[] {
       id: c.id,
       type: "chat",
       position: { x: home[c.id]![0], y: home[c.id]![1] },
-      data: { app: c.app, title: c.title, msgs: c.msgs },
+      data: { app: c.app, title: c.title, msgs: c.msgs, date: c.date },
     })),
   ];
 }
@@ -150,6 +168,8 @@ function Canvas() {
   const [step, setStep] = useState(0); // 0 open · 1 drag · 2 write · 3 continue · 4 done
   const [selected, setSelected] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [dragApp, setDragApp] = useState<AppId | null>(null);
+  const [cutoff, setCutoff] = useState(LAST_DAY);
   const [typed, setTyped] = useState(0);
   const [writing, setWriting] = useState(false);
   const [hint, setHint] = useState<string | null>(null);
@@ -166,12 +186,14 @@ function Canvas() {
       const H = el.clientHeight;
       const wide = W >= 640;
       const freeW = panel && wide ? W - 340 : W;
-      const freeH = panel && !wide ? H * 0.36 : H;
+      const top = 60; // graph toolbar
+      const bottom = wide ? 60 : 16; // zoom bar and timeline
+      const freeH = (panel && !wide ? H * 0.36 : H) - top - bottom;
       const b = flow.getNodesBounds(flow.getNodes());
-      const pad = 24;
+      const pad = 16;
       const zoom = Math.min((freeW - pad * 2) / b.width, (freeH - pad * 2) / b.height, 1.1);
       void flow.setViewport(
-        { x: pad + (freeW - pad * 2 - b.width * zoom) / 2 - b.x * zoom, y: pad + (freeH - pad * 2 - b.height * zoom) / 2 - b.y * zoom, zoom },
+        { x: pad + (freeW - pad * 2 - b.width * zoom) / 2 - b.x * zoom, y: top + pad + (freeH - pad * 2 - b.height * zoom) / 2 - b.y * zoom, zoom },
         { duration: 500 },
       );
     },
@@ -193,7 +215,7 @@ function Canvas() {
     if (step >= 4) {
       list.push(
         { id: "e-copy-hub", source: "hub-codex", target: "copy", type: "straight", style: { stroke: APPS.codex.color, strokeOpacity: 0.5, strokeWidth: 1.5 } },
-        { id: "e-link", source: TARGET, target: "copy", animated: true, style: { stroke: "var(--primary)", strokeWidth: 2, strokeDasharray: "6 5" } },
+        { id: "e-link", source: TARGET, target: "copy", animated: true, style: { stroke: "#34d399", strokeWidth: 2, strokeDasharray: "6 5" } },
       );
     }
     return list;
@@ -259,7 +281,7 @@ function Canvas() {
               id: "copy",
               type: "chat",
               position: { x: COPY_POS[0], y: COPY_POS[1] },
-              data: { app: "codex", title: "Rate limiting the API", msgs: 4, copy: true },
+              data: { app: "codex", title: "Rate limiting the API", msgs: 4, date: LAST_DAY, copy: true },
               draggable: false,
             } satisfies Node<ChatData>,
           ],
@@ -271,9 +293,10 @@ function Canvas() {
   /** Animates the target chat onto Codex, as if the user dragged it. */
   const autoDrag = useCallback(() => {
     const from = nodes.find((n) => n.id === TARGET)!.position;
-    const to = { x: APPS.codex.at[0] - CHAT_W / 2 + HUB / 2, y: APPS.codex.at[1] + 8 };
+    const to = { x: APPS.codex.at[0] - CHAT_W / 2, y: APPS.codex.at[1] - CHAT_H / 2 };
     const start = performance.now();
     setDragging(true);
+    setDragApp("claude");
     const tick = (now: number) => {
       const k = Math.min(1, (now - start) / 1100);
       const e = k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2;
@@ -282,6 +305,7 @@ function Canvas() {
       if (k < 1) requestAnimationFrame(tick);
       else {
         setDragging(false);
+        setDragApp(null);
         window.setTimeout(() => dropped(TARGET, "hub-codex"), 250);
       }
     };
@@ -303,6 +327,7 @@ function Canvas() {
     setTyped(0);
     setWriting(false);
     setHint(null);
+    setCutoff(LAST_DAY);
     window.setTimeout(() => frame(false), 0);
   };
 
@@ -310,7 +335,7 @@ function Canvas() {
   const chat = CHATS.find((c) => c.id === selected);
 
   return (
-    <Live.Provider value={{ step, dragging, selected, t }}>
+    <Live.Provider value={{ step, dragApp, selected, cutoff }}>
       <div className="flex flex-col gap-3">
         {/* steps */}
         <ol className="grid grid-cols-4 gap-2" aria-label={d.label}>
@@ -389,30 +414,46 @@ function Canvas() {
         </AnimatePresence>
 
         {/* canvas, inside a laptop */}
-        <div className="dark relative text-foreground">
+        <div className="dark app-theme relative text-foreground">
           <div className="rounded-[20px] border border-white/10 bg-[#0a0b0d] p-1.5 shadow-[0_50px_120px_-30px_rgba(0,0,0,0.55)] sm:rounded-[28px] sm:p-3">
-            <div className="overflow-hidden rounded-[14px] border border-white/[0.06] bg-[oklch(0.15_0.005_260)] sm:rounded-[18px]">
-              <div className="relative flex items-center border-b border-white/[0.06] px-4 py-2.5">
+            <div className="overflow-hidden rounded-[14px] border border-white/[0.06] bg-background sm:rounded-[18px]">
+              <div className="relative flex items-center px-4 py-2">
                 <div className="flex gap-1.5">
                   <i className="size-3 rounded-full bg-[#ff5f57]" />
                   <i className="size-3 rounded-full bg-[#febc2e]" />
                   <i className="size-3 rounded-full bg-[#28c840]" />
                 </div>
-                <span className="absolute left-1/2 -translate-x-1/2 truncate text-xs text-muted-foreground">Carryover · {d.label}</span>
+                <span className="absolute left-1/2 -translate-x-1/2 text-xs text-muted-foreground">Carryover</span>
               </div>
-              <div className="hidden items-center gap-2 border-b border-white/[0.06] px-4 py-2 text-xs sm:flex">
-                <span className="rounded-md border px-2.5 py-1 text-muted-foreground">View <b className="font-medium text-foreground">Tool</b> ▾</span>
-                <span className={cn("rounded-md border px-2.5 py-1", step >= 1 && step < 4 ? "border-primary/50 text-primary" : "text-muted-foreground")}>⇄ Transfer</span>
-                <span className="w-48 rounded-md border px-2.5 py-1 text-muted-foreground/70">Search all chats…</span>
-                <span className="ml-auto flex gap-1.5">
-                  {(Object.keys(APPS) as AppId[]).map((id) => (
-                    <span key={id} className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground">
-                      <span className="size-1.5 rounded-full" style={{ background: APPS[id].color }} />
-                      {APPS[id].label} · {CHATS.filter((c) => c.app === id).length + (id === "codex" && step >= 4 ? 1 : 0)}
-                    </span>
-                  ))}
+              <header className="flex items-center gap-5 border-y px-4 py-2.5 sm:px-6">
+                <span className="flex items-center gap-2 text-base font-semibold tracking-tight">
+                  <img src={`${import.meta.env.BASE_URL}logo.png`} alt="" className="size-6" />
+                  Carryover
                 </span>
-              </div>
+                <nav className="flex gap-1 text-sm" aria-hidden>
+                  {[
+                    [Scale, "Compare"],
+                    [Network, "Memory graph"],
+                    [Brain, "Memory"],
+                    [Trophy, "Leaderboard"],
+                    [LayoutGrid, "Apps & import"],
+                  ].map(([Icon, label], i) => {
+                    const I = Icon as typeof Scale;
+                    return (
+                      <span
+                        key={label as string}
+                        className={cn(
+                          "items-center gap-2 rounded-md px-3 py-1.5",
+                          i === 1 ? "flex bg-accent font-medium" : "hidden text-muted-foreground lg:flex",
+                        )}
+                      >
+                        <I className="size-4" /> {label as string}
+                      </span>
+                    );
+                  })}
+                </nav>
+                <span className="ml-auto hidden text-xs text-muted-foreground xl:inline">All data stays on this computer.</span>
+              </header>
         <div ref={box} className="relative h-[440px] overflow-hidden sm:h-[540px]">
           <ReactFlow
             nodes={nodes}
@@ -420,12 +461,14 @@ function Canvas() {
             nodeTypes={nodeTypes}
             onNodesChange={onNodesChange}
             onNodeClick={(_, n) => n.type === "chat" && n.id !== "copy" && open(n.id)}
-            onNodeDragStart={() => {
+            onNodeDragStart={(_, n) => {
               setDragging(true);
+              setDragApp((n.data as ChatData).app ?? null);
               setHint(null);
             }}
             onNodeDragStop={(_, n) => {
               setDragging(false);
+              setDragApp(null);
               const hub = flow.getIntersectingNodes(n).find((x) => x.type === "hub");
               dropped(n.id, hub?.id);
             }}
@@ -434,8 +477,7 @@ function Canvas() {
               setSelected(null);
               frame(false);
             }}
-            fitView
-            fitViewOptions={{ padding: 0.12 }}
+            onInit={() => frame(false)}
             minZoom={0.4}
             maxZoom={1.8}
             zoomOnScroll={false}
@@ -444,10 +486,45 @@ function Canvas() {
             nodesConnectable={false}
             elementsSelectable={false}
           >
-            <Background variant={BackgroundVariant.Dots} gap={22} size={1.2} color="var(--border)" />
+            <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="var(--border)" />
+            <MiniMap
+              pannable
+              zoomable
+              className="max-md:!hidden !bottom-3 !right-3 !m-0 overflow-hidden rounded-md border"
+              style={{ background: "var(--card)", width: 168, height: 112 }}
+              maskColor="rgba(0,0,0,0.45)"
+              nodeColor={(n) => APPS[(n.data as HubData).app]?.color ?? "#888"}
+              nodeBorderRadius={4}
+            />
           </ReactFlow>
 
-          <ZoomBar />
+          <div className="pointer-events-none absolute inset-x-3 top-3 z-10 flex flex-wrap items-center gap-2 text-sm">
+            <span className="pointer-events-auto flex items-center gap-1.5 rounded-md border bg-card px-3 py-1.5 shadow-sm">
+              <span className="text-muted-foreground">View</span> Auto (Tool) <ChevronDown className="size-3.5 text-muted-foreground" />
+            </span>
+            <span
+              className={cn(
+                "pointer-events-auto flex items-center gap-1.5 rounded-md border bg-card px-3 py-1.5 shadow-sm",
+                step >= 1 && step < 4 && "border-primary/60 bg-accent",
+              )}
+            >
+              <ArrowLeftRight className="size-3.5" /> Transfer
+            </span>
+            <span className="pointer-events-auto hidden w-56 items-center gap-2 rounded-md border bg-card px-3 py-1.5 text-muted-foreground shadow-sm md:flex">
+              <Search className="size-3.5" /> Search all chats…
+            </span>
+            <span className="hidden flex-wrap gap-1.5 xl:flex">
+              {(Object.keys(APPS) as AppId[]).map((id) => (
+                <span key={id} className="flex items-center gap-1.5 rounded-full border bg-card px-2.5 py-1 text-xs">
+                  <span className="size-2 rounded-full" style={{ background: APPS[id].color }} />
+                  {APPS[id].label} · {CHATS.filter((c) => c.app === id).length + (id === "codex" && step >= 4 ? 1 : 0)}
+                </span>
+              ))}
+            </span>
+          </div>
+          <Timeline cutoff={cutoff} onChange={setCutoff} />
+
+          <AppZoomBar />
 
           <AnimatePresence>
             {hint && (
@@ -470,7 +547,7 @@ function Canvas() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 24 }}
                 transition={{ type: "spring", stiffness: 260, damping: 28 }}
-                className="absolute inset-x-2 bottom-2 flex max-h-[62%] flex-col overflow-hidden rounded-xl border bg-popover shadow-2xl sm:inset-x-auto sm:right-3 sm:top-3 sm:bottom-3 sm:max-h-none sm:w-[320px]"
+                className="absolute inset-x-2 bottom-2 flex max-h-[62%] flex-col overflow-hidden rounded-xl border bg-popover shadow-2xl sm:inset-x-auto sm:right-3 sm:top-14 sm:bottom-3 sm:max-h-none sm:w-[320px] z-20"
               >
                 <header className="flex items-start justify-between gap-2 border-b p-4">
                   <div className="min-w-0">
@@ -552,14 +629,57 @@ function Canvas() {
   );
 }
 
-function ZoomBar() {
-  const { zoomIn, zoomOut, fitView } = useReactFlow();
-  const btn = "grid size-8 place-items-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground";
+/** The app's zoom bar: −, slider, +, percentage, fit. */
+function AppZoomBar() {
+  const { zoomIn, zoomOut, zoomTo, fitView } = useReactFlow();
+  const { zoom } = useViewport();
+  const btn = "flex size-7 items-center justify-center rounded hover:bg-accent";
+  const MIN = 0.4;
+  const MAX = 1.8;
   return (
-    <div className="absolute bottom-3 left-3 flex gap-0.5 rounded-lg border bg-background/90 p-1 backdrop-blur">
-      <button className={btn} onClick={() => void zoomOut()} aria-label="Zoom out"><Minus className="size-4" /></button>
-      <button className={btn} onClick={() => void zoomIn()} aria-label="Zoom in"><Plus className="size-4" /></button>
-      <button className={btn} onClick={() => void fitView({ padding: 0.12, duration: 400 })} aria-label="Fit"><Maximize className="size-4" /></button>
+    <div className="absolute bottom-3 left-3 z-10 flex items-center gap-1 rounded-md border bg-card px-1.5 py-1 text-xs shadow-sm">
+      <button className={btn} onClick={() => void zoomOut()} aria-label="Zoom out"><Minus className="size-3.5" /></button>
+      <input
+        type="range"
+        aria-label="Zoom level"
+        min={0}
+        max={100}
+        value={Math.round(((zoom - MIN) / (MAX - MIN)) * 100)}
+        onChange={(e) => void zoomTo(MIN + (Number(e.target.value) / 100) * (MAX - MIN))}
+        className="hidden w-24 accent-current sm:block"
+      />
+      <button className={btn} onClick={() => void zoomIn()} aria-label="Zoom in"><Plus className="size-3.5" /></button>
+      <span className="hidden w-10 text-center tabular-nums text-muted-foreground sm:inline">{Math.round(zoom * 100)}%</span>
+      <button className={btn} onClick={() => void fitView({ padding: 0.12, duration: 400 })} aria-label="Fit to screen"><Maximize className="size-3.5" /></button>
+    </div>
+  );
+}
+
+const DAY = 86_400_000;
+const fmtDay = (iso: string) => new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
+/** The app's timeline slider: see your chats as they were on any day. */
+function Timeline({ cutoff, onChange }: { cutoff: string; onChange: (d: string) => void }) {
+  const min = Date.parse(FIRST_DAY);
+  const max = Date.parse(LAST_DAY);
+  const value = Date.parse(cutoff);
+  const shown = CHATS.filter((c) => c.date <= cutoff).length;
+  return (
+    <div className="absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 items-center gap-3 rounded-md border bg-card px-3 py-2 text-xs shadow-sm md:flex">
+      <History className="size-3.5 text-muted-foreground" />
+      <span className="w-20 shrink-0 text-muted-foreground">{fmtDay(FIRST_DAY)}</span>
+      <input
+        type="range"
+        aria-label="Timeline"
+        min={0}
+        max={Math.round((max - min) / DAY)}
+        value={Math.round((value - min) / DAY)}
+        onChange={(e) => onChange(new Date(min + Number(e.target.value) * DAY).toISOString().slice(0, 10))}
+        className="w-48 accent-current lg:w-64"
+      />
+      <span className="w-36 shrink-0">
+        {cutoff >= LAST_DAY ? "Now" : fmtDay(cutoff)} · {shown} of {CHATS.length} chats
+      </span>
     </div>
   );
 }

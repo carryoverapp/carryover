@@ -31,7 +31,7 @@ const de: Dict = {
       },
       {
         title: "Mitnehmen",
-        hint: "Zieh den Chat auf den Codex-Kreis.",
+        hint: "Zieh den Chat auf Codex.",
       },
       {
         title: "Übergabe schreiben",

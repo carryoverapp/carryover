@@ -31,7 +31,7 @@ const en = {
       },
       {
         title: "Carry it over",
-        hint: "Drag the chat onto the Codex circle.",
+        hint: "Drag the chat onto Codex.",
       },
       {
         title: "Write a handoff",

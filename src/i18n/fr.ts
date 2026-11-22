@@ -31,7 +31,7 @@ const fr: Dict = {
       },
       {
         title: "Passez-la",
-        hint: "Glissez la conversation sur le cercle Codex.",
+        hint: "Glissez la conversation sur Codex.",
       },
       {
         title: "Rédigez la passation",

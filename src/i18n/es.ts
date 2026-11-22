@@ -31,7 +31,7 @@ const es: Dict = {
       },
       {
         title: "Llévalo",
-        hint: "Arrastra el chat al círculo de Codex.",
+        hint: "Arrastra el chat sobre Codex.",
       },
       {
         title: "Escribe el traspaso",

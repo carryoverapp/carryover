@@ -26,11 +26,11 @@
   --grid: oklch(0.2 0.03 255 / 0.06);
   --glow: oklch(0.75 0.17 158 / 0.25);
 
-  --claude: #d9774e;
-  --chatgpt: #10a37f;
+  --claude: #f97316;
+  --chatgpt: #10b981;
   --claude-code: #3b82f6;
   --codex: #8b5cf6;
-  --antigravity: #d6991a;
+  --antigravity: #ec4899;
 }
 
 .dark {
@@ -54,11 +54,30 @@
   --grid: oklch(1 0 0 / 0.045);
   --glow: oklch(0.84 0.18 158 / 0.28);
 
-  --claude: #e8875b;
-  --chatgpt: #33c48d;
-  --claude-code: #5b9cf5;
-  --codex: #a07cf5;
-  --antigravity: #f2c14e;
+  --claude: #f97316;
+  --chatgpt: #10b981;
+  --claude-code: #3b82f6;
+  --codex: #8b5cf6;
+  --antigravity: #ec4899;
+}
+
+/* The desktop app's own dark theme, used inside the demo laptop. */
+.app-theme {
+  --background: oklch(0.17 0.01 260);
+  --foreground: oklch(0.96 0.005 260);
+  --card: oklch(0.21 0.01 260);
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.21 0.01 260);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.93 0.005 260);
+  --primary-foreground: oklch(0.2 0.01 260);
+  --secondary: oklch(0.27 0.01 260);
+  --muted: oklch(0.27 0.01 260);
+  --muted-foreground: oklch(0.68 0.015 260);
+  --accent: oklch(0.27 0.01 260);
+  --border: oklch(0.3 0.01 260);
+  --input: oklch(0.3 0.01 260);
+  --ring: oklch(0.93 0.005 260);
 }
 
 @theme inline {
