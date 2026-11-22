@@ -179,10 +179,10 @@ export function HeroGraph() {
           animate={{ x: carry.xs, y: carry.ys, opacity: [0, 1, 1, 1, 1, 0] }}
           transition={{ duration: 4.5, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" }}
         >
-          <rect x="-62" y="-17" width="124" height="34" rx="10" fill="var(--card)" stroke="var(--primary)" strokeWidth="1.5" />
-          <circle cx="-46" cy="0" r="5" fill="var(--claude)" />
-          <text x="-34" y="5" className="fill-foreground text-[13px] font-medium" style={{ fontFamily: "var(--font-sans)" }}>
-            SSO with JWT
+          <rect x="-84" y="-17" width="168" height="34" rx="10" fill="var(--card)" stroke="var(--primary)" strokeWidth="1.5" />
+          <circle cx="-68" cy="0" r="5" fill="var(--claude)" />
+          <text x="-56" y="5" className="fill-foreground text-[13px] font-medium" style={{ fontFamily: "var(--font-sans)" }}>
+            LoRA fine-tuning plan
           </text>
         </motion.g>
       )}

@@ -14,25 +14,32 @@ const fade = (delay: number) => ({
 
 const APP_VARS = ["--claude", "--chatgpt", "--claude-code", "--codex", "--antigravity"];
 
-/** Five app colours orbiting, sized to the headline's text. */
-function AppsGlyph() {
+/** Five app-coloured streams merging into one, flowing into the logo. */
+function StreamsGlyph() {
+  const ys = [8, 20, 32, 44, 56];
   return (
-    <span className="relative inline-block size-[0.82em] shrink-0 align-middle" aria-hidden>
-      <span className="absolute inset-0 rounded-full opacity-60 blur-xl" style={{ background: "radial-gradient(closest-side, var(--glow), transparent)" }} />
-      <motion.span className="absolute inset-0" animate={{ rotate: 360 }} transition={{ duration: 18, repeat: Infinity, ease: "linear" }}>
-        {APP_VARS.map((v, i) => {
-          const a = (i / APP_VARS.length) * Math.PI * 2 - Math.PI / 2;
-          return (
-            <span
-              key={v}
-              className="absolute size-[0.24em] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{ left: `${50 + Math.cos(a) * 36}%`, top: `${50 + Math.sin(a) * 36}%`, background: `var(${v})`, boxShadow: `0 0 0.18em var(${v})` }}
+    <svg viewBox="0 0 100 64" className="inline-block h-[0.62em] w-[0.98em] shrink-0 overflow-visible align-middle" aria-hidden>
+      {APP_VARS.map((v, i) => {
+        const d = `M2,${ys[i]} C40,${ys[i]} 52,32 74,32`;
+        return (
+          <g key={v}>
+            <path d={d} fill="none" stroke={`var(${v})`} strokeWidth="5" strokeLinecap="round" opacity="0.35" />
+            <motion.path
+              d={d}
+              fill="none"
+              stroke={`var(${v})`}
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeDasharray="14 60"
+              animate={{ strokeDashoffset: [74, -74] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "linear", delay: i * 0.18 }}
+              style={{ filter: `drop-shadow(0 0 4px var(${v}))` }}
             />
-          );
-        })}
-      </motion.span>
-      <span className="absolute left-1/2 top-1/2 size-[0.14em] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_0.3em_var(--primary)]" />
-    </span>
+          </g>
+        );
+      })}
+      <path d="M74,32 L98,32" stroke="var(--primary)" strokeWidth="6" strokeLinecap="round" style={{ filter: "drop-shadow(0 0 6px var(--primary))" }} />
+    </svg>
   );
 }
 
@@ -86,9 +93,11 @@ export function Hero({ release }: { release: Release }) {
         <motion.h1 {...fade(0)} className="mx-auto max-w-5xl text-[clamp(2.9rem,8.5vw,6.6rem)] font-medium leading-[0.98] tracking-[-0.045em]">
           <span className="text-fade block pb-[0.06em]">{t.hero.title1}</span>
           <span className="mt-[0.04em] inline-flex flex-wrap items-center justify-center gap-x-[0.22em]">
-            <AppsGlyph />
             <span>{t.hero.title2}</span>
-            <LogoGlyph />
+            <span className="inline-flex items-center gap-x-[0.08em]">
+              <StreamsGlyph />
+              <LogoGlyph />
+            </span>
           </span>
         </motion.h1>
 

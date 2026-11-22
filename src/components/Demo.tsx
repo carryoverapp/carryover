@@ -34,11 +34,11 @@ const TARGET = "chat-rate";
 const CHATS: { id: string; app: AppId; title: string; msgs: number; angle: number }[] = [
   { id: TARGET, app: "claude", title: "Rate limiting the API", msgs: 4, angle: 20 },
   { id: "c2", app: "claude", title: "Trip plan for Lisbon", msgs: 31, angle: 130 },
-  { id: "c3", app: "claude", title: "Explain monads simply", msgs: 12, angle: 240 },
+  { id: "c3", app: "claude", title: "LoRA fine-tuning plan", msgs: 12, angle: 240 },
   { id: "cc1", app: "claude-code", title: "SQLite migrations in Rust", msgs: 88, angle: 200 },
   { id: "cc2", app: "claude-code", title: "Fix flaky login test", msgs: 46, angle: 340 },
   { id: "g1", app: "chatgpt", title: "Cricket stats notebook", msgs: 23, angle: 160 },
-  { id: "g2", app: "chatgpt", title: "SSO with JWT", msgs: 57, angle: 20 },
+  { id: "g2", app: "chatgpt", title: "RAG eval pipeline", msgs: 57, angle: 20 },
   { id: "a1", app: "antigravity", title: "Design tokens for dark mode", msgs: 19, angle: 60 },
   { id: "x1", app: "codex", title: "Kubernetes ingress setup", msgs: 64, angle: 300 },
   { id: "x2", app: "codex", title: "React version upgrade", msgs: 39, angle: 70 },
@@ -388,8 +388,32 @@ function Canvas() {
           </motion.div>
         </AnimatePresence>
 
-        {/* canvas */}
-        <div ref={box} className="relative h-[480px] overflow-hidden rounded-2xl border bg-card/40 sm:h-[560px]">
+        {/* canvas, inside a laptop */}
+        <div className="dark relative text-foreground">
+          <div className="rounded-[20px] border border-white/10 bg-[#0a0b0d] p-1.5 shadow-[0_50px_120px_-30px_rgba(0,0,0,0.55)] sm:rounded-[28px] sm:p-3">
+            <div className="overflow-hidden rounded-[14px] border border-white/[0.06] bg-[oklch(0.15_0.005_260)] sm:rounded-[18px]">
+              <div className="relative flex items-center border-b border-white/[0.06] px-4 py-2.5">
+                <div className="flex gap-1.5">
+                  <i className="size-3 rounded-full bg-[#ff5f57]" />
+                  <i className="size-3 rounded-full bg-[#febc2e]" />
+                  <i className="size-3 rounded-full bg-[#28c840]" />
+                </div>
+                <span className="absolute left-1/2 -translate-x-1/2 truncate text-xs text-muted-foreground">Carryover · {d.label}</span>
+              </div>
+              <div className="hidden items-center gap-2 border-b border-white/[0.06] px-4 py-2 text-xs sm:flex">
+                <span className="rounded-md border px-2.5 py-1 text-muted-foreground">View <b className="font-medium text-foreground">Tool</b> ▾</span>
+                <span className={cn("rounded-md border px-2.5 py-1", step >= 1 && step < 4 ? "border-primary/50 text-primary" : "text-muted-foreground")}>⇄ Transfer</span>
+                <span className="w-48 rounded-md border px-2.5 py-1 text-muted-foreground/70">Search all chats…</span>
+                <span className="ml-auto flex gap-1.5">
+                  {(Object.keys(APPS) as AppId[]).map((id) => (
+                    <span key={id} className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground">
+                      <span className="size-1.5 rounded-full" style={{ background: APPS[id].color }} />
+                      {APPS[id].label} · {CHATS.filter((c) => c.app === id).length + (id === "codex" && step >= 4 ? 1 : 0)}
+                    </span>
+                  ))}
+                </span>
+              </div>
+        <div ref={box} className="relative h-[440px] overflow-hidden sm:h-[540px]">
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -423,9 +447,6 @@ function Canvas() {
             <Background variant={BackgroundVariant.Dots} gap={22} size={1.2} color="var(--border)" />
           </ReactFlow>
 
-          <div className="pointer-events-none absolute left-3 top-3 rounded-full border bg-background/80 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-            {d.label}
-          </div>
           <ZoomBar />
 
           <AnimatePresence>
@@ -519,6 +540,12 @@ function Canvas() {
               </motion.aside>
             )}
           </AnimatePresence>
+        </div>
+            </div>
+          </div>
+          <div className="relative mx-[-2.5%] h-3 rounded-b-[16px] bg-gradient-to-b from-[#3a3d44] to-[#15161a] shadow-[0_18px_30px_-12px_rgba(0,0,0,0.6)] sm:h-4">
+            <div className="mx-auto h-1.5 w-20 rounded-b-md bg-black/50 sm:w-28" />
+          </div>
         </div>
       </div>
     </Live.Provider>
