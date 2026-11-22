@@ -1,5 +1,6 @@
 import { Check, Download, Languages, Monitor, Moon, Sun } from "lucide-react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -18,6 +19,11 @@ export function Nav() {
   const { theme, setTheme } = useTheme();
   const { scrollY } = useScroll();
   const border = useTransform(scrollY, [0, 40], [0, 1]);
+  const [overHero, setOverHero] = useState(true);
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const hero = document.getElementById("top");
+    setOverHero(!!hero && y < hero.offsetHeight - 120);
+  });
   const themes: { id: Theme; label: string; icon: typeof Sun }[] = [
     { id: "light", label: t.theme.light, icon: Sun },
     { id: "dark", label: t.theme.dark, icon: Moon },
@@ -26,8 +32,8 @@ export function Nav() {
   const ThemeIcon = theme === "light" ? Sun : theme === "dark" ? Moon : Monitor;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="bg-background/70 backdrop-blur-xl">
+    <header className={`fixed inset-x-0 top-0 z-50 text-foreground ${overHero ? "dark" : ""}`}>
+      <div className={overHero ? "bg-black/40 backdrop-blur-xl" : "bg-background/75 backdrop-blur-xl"}>
         <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
           <a href="#top" className="flex items-center gap-2.5 font-semibold tracking-tight">
             <img src={`${base}logo.png`} alt="" className="size-8 rounded-lg" width={32} height={32} />
@@ -72,7 +78,7 @@ export function Nav() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button asChild size="sm" className="ml-1 rounded-full px-4">
+            <Button asChild size="sm" className="ml-1 rounded-lg px-4">
               <a href="#download">
                 <Download /> <span className="hidden sm:inline">{t.nav.download}</span>
               </a>

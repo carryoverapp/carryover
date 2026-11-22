@@ -70,6 +70,48 @@ const de: Dict = {
     ],
     summaryText: "Ziel: Rate Limiting für die öffentliche API.\nEntschieden: Token Bucket pro API-Schlüssel, in Redis. Gratis-Plan: 100 Anfragen pro Minute.\nOffen: Limits für bezahlte Pläne.\nNächster Schritt: 429 mit Retry-After zurückgeben, dann Tests schreiben.",
   },
+  paths: {
+    title1: "Wähle deinen",
+    title2: "Weg",
+    sub: "Carryover passt dazu, wie du KI nutzt, ob im Browser oder im Terminal.",
+    users: {
+      title: "Für den KI-Alltag",
+      sub: "Claude und ChatGPT, endlich zusammen.",
+      points: [
+        "Importiere deine offiziellen Claude- und ChatGPT-Exporte",
+        "Alle Chats auf einer durchsuchbaren Karte",
+        "Limit erreicht? Nimm den Chat zu einer anderen KI mit",
+      ],
+      cta: "Für Windows herunterladen",
+    },
+    devs: {
+      title: "Für Entwickler",
+      sub: "Claude Code, Codex und Antigravity, ein Gedächtnis.",
+      points: [
+        "Sitzungen werden automatisch importiert, nach Projekt",
+        "Bestätigte Erinnerungen landen in CLAUDE.md und AGENTS.md",
+        "Eingebauter MCP-Server für jeden MCP-Client",
+      ],
+      cta: "Funktionen ansehen",
+    },
+  },
+  story: [
+    {
+      lead: "Deine KIs",
+      rest: "reden nicht miteinander.",
+      body: "Jede App hat ihren eigenen Verlauf. Wechselst du das Tool, fängst du bei null an.",
+    },
+    {
+      lead: "Carryover",
+      rest: "verbindet, was du schon hast.",
+      body: "Es liest deine vorhandenen Chats in einen privaten Graphen auf deinem Computer.",
+    },
+    {
+      lead: "Dein Kontext",
+      rest: "geht mit dir mit.",
+      body: "Nimm einen Chat oder dein Gedächtnis zu jeder KI mit und mach dort weiter.",
+    },
+  ],
   features: {
     eyebrow: "Was es kann",
     title1: "All deine KIs,",

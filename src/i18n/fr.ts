@@ -70,6 +70,48 @@ const fr: Dict = {
     ],
     summaryText: "Objectif : ajouter une limite de débit à l'API publique.\nDécidé : token bucket par clé d'API, dans Redis. Offre gratuite : 100 requêtes par minute.\nQuestion ouverte : limites des offres payantes.\nProchaine étape : renvoyer 429 avec Retry-After, puis ajouter des tests.",
   },
+  paths: {
+    title1: "Choisissez votre",
+    title2: "voie",
+    sub: "Carryover s'adapte à votre façon d'utiliser l'IA, dans le navigateur ou dans le terminal.",
+    users: {
+      title: "Pour l'IA au quotidien",
+      sub: "Claude et ChatGPT, enfin réunis.",
+      points: [
+        "Importez vos exports officiels Claude et ChatGPT",
+        "Toutes vos conversations sur une carte consultable",
+        "Limite atteinte ? Passez la conversation à une autre IA",
+      ],
+      cta: "Télécharger pour Windows",
+    },
+    devs: {
+      title: "Pour les développeurs",
+      sub: "Claude Code, Codex et Antigravity, une seule mémoire.",
+      points: [
+        "Les sessions s'importent seules, par projet",
+        "Les souvenirs validés vont dans CLAUDE.md et AGENTS.md",
+        "Serveur MCP intégré pour tout client MCP",
+      ],
+      cta: "Voir les fonctions",
+    },
+  },
+  story: [
+    {
+      lead: "Vos IA",
+      rest: "ne se parlent pas.",
+      body: "Chaque app garde son propre historique. Changez d'outil et vous repartez de zéro.",
+    },
+    {
+      lead: "Carryover",
+      rest: "relie ce que vous avez déjà.",
+      body: "Il rassemble vos conversations existantes dans un graphe privé sur votre ordinateur.",
+    },
+    {
+      lead: "Votre contexte",
+      rest: "vous suit partout.",
+      body: "Passez une conversation ou votre mémoire à n'importe quelle IA et reprenez là où vous en étiez.",
+    },
+  ],
   features: {
     eyebrow: "Ce qu'il fait",
     title1: "Toutes vos IA,",

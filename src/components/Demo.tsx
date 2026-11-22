@@ -540,7 +540,7 @@ function ZoomBar() {
 export function Demo() {
   const { t } = useI18n();
   return (
-    <section id="demo" className="mx-auto max-w-6xl scroll-mt-20 px-4 pt-10 sm:px-6">
+    <section id="demo" className="mx-auto max-w-6xl scroll-mt-20 px-4 pt-20 sm:px-6 sm:pt-28">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -549,7 +549,7 @@ export function Demo() {
         className="mb-8 max-w-2xl"
       >
         <p className="text-sm font-medium text-primary">{t.demo.eyebrow}</p>
-        <h2 className="mt-3 text-[clamp(1.9rem,4vw,2.8rem)] font-semibold leading-tight tracking-[-0.03em]">{t.demo.title}</h2>
+        <h2 className="mt-3 text-[clamp(2.2rem,5vw,3.6rem)] font-medium leading-[1.05] tracking-[-0.04em]">{t.demo.title}</h2>
         <p className="mt-3 text-lg text-muted-foreground">{t.demo.sub}</p>
       </motion.div>
       <ReactFlowProvider>

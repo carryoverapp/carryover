@@ -77,7 +77,7 @@ export function Privacy() {
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-[1.15fr_1fr]">
         <motion.div {...reveal}>
           <p className="flex items-center gap-2 text-sm font-medium text-primary"><ShieldCheck className="size-4" />{p.eyebrow}</p>
-          <h2 className="mt-3 text-[clamp(1.9rem,4vw,2.8rem)] font-semibold leading-tight tracking-[-0.03em]">{p.title}</h2>
+          <h2 className="mt-3 text-[clamp(1.9rem,4vw,2.8rem)] font-medium leading-[1.08] tracking-[-0.04em]">{p.title}</h2>
           <p className="mt-4 text-lg text-muted-foreground">{p.sub}</p>
           <ul className="mt-8 space-y-4">
             {p.points.map((pt) => (
@@ -137,8 +137,8 @@ export function DownloadSection({ release }: { release: Release }) {
       <div className="bg-grid pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,black,transparent)]" />
       <motion.div {...reveal} className="mx-auto max-w-3xl text-center">
         <img src={`${import.meta.env.BASE_URL}logo.png`} alt="" className="mx-auto size-16 rounded-2xl shadow-lg" width={64} height={64} />
-        <h2 className="mt-6 text-[clamp(2.2rem,5vw,3.6rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
-          {t.final.title1} <span className="text-gradient font-serif font-normal italic">{t.final.title2}</span>
+        <h2 className="mt-6 text-[clamp(2.4rem,6vw,4.4rem)] font-medium leading-[1.02] tracking-[-0.045em]">
+          <span className="text-fade">{t.final.title1}</span> <span className="text-primary">{t.final.title2}</span>
         </h2>
       </motion.div>
       <motion.div {...reveal} transition={{ ...reveal.transition, delay: 0.1 }} className="mx-auto mt-12 grid max-w-4xl gap-4 md:grid-cols-2">
@@ -158,7 +158,7 @@ export function Faq() {
     <section id="faq" className="mx-auto max-w-3xl scroll-mt-20 px-4 pb-8 pt-24 sm:px-6">
       <motion.div {...reveal} className="text-center">
         <p className="text-sm font-medium text-primary">{t.faq.eyebrow}</p>
-        <h2 className="mt-3 text-[clamp(2rem,4.5vw,3rem)] font-semibold tracking-[-0.03em]">{t.faq.title}</h2>
+        <h2 className="mt-3 text-[clamp(2.2rem,5vw,3.4rem)] font-medium tracking-[-0.04em]">{t.faq.title}</h2>
       </motion.div>
       <Accordion type="single" collapsible className="mt-10">
         {t.faq.items.map((it, i) => (

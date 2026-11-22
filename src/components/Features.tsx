@@ -182,8 +182,8 @@ export function Features() {
     <section id="features" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-24 sm:px-6 sm:py-32">
       <motion.div {...reveal} className="mx-auto max-w-2xl text-center">
         <p className="text-sm font-medium text-primary">{f.eyebrow}</p>
-        <h2 className="mt-3 text-[clamp(2rem,4.5vw,3.2rem)] font-semibold leading-tight tracking-[-0.03em]">
-          {f.title1} <span className="font-serif font-normal italic">{f.title2}</span>
+        <h2 className="mt-3 text-[clamp(2.2rem,5vw,3.6rem)] font-medium leading-[1.05] tracking-[-0.04em]">
+          <span className="text-muted-foreground">{f.title1}</span> <span className="text-primary">{f.title2}</span>
         </h2>
         <p className="mt-4 text-lg text-muted-foreground">{f.sub}</p>
       </motion.div>

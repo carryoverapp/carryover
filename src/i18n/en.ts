@@ -67,6 +67,48 @@ const en = {
     ],
     summaryText: "Goal: add rate limiting to the public API.\nDecided: token bucket per API key, stored in Redis. Free plan: 100 requests a minute.\nOpen question: limits for paid plans.\nNext step: return 429 with a Retry-After header, then add tests.",
   },
+  paths: {
+    title1: "Choose your",
+    title2: "path",
+    sub: "Carryover fits how you use AI, whether that's in a browser or in a terminal.",
+    users: {
+      title: "For everyday AI users",
+      sub: "Claude and ChatGPT, together at last.",
+      points: [
+        "Import your official Claude and ChatGPT exports",
+        "See every chat on one searchable map",
+        "Hit a limit? Carry the chat to another AI",
+      ],
+      cta: "Download for Windows",
+    },
+    devs: {
+      title: "For developers",
+      sub: "Claude Code, Codex and Antigravity, one memory.",
+      points: [
+        "Sessions import on their own, by project",
+        "Approved memories go into CLAUDE.md and AGENTS.md",
+        "Built-in MCP server for any MCP client",
+      ],
+      cta: "See the features",
+    },
+  },
+  story: [
+    {
+      lead: "Your AIs",
+      rest: "don't talk to each other.",
+      body: "Every app keeps its own history. Switch tools and you start from zero.",
+    },
+    {
+      lead: "Carryover",
+      rest: "connects what you already have.",
+      body: "It reads your existing chats into one private graph on your computer.",
+    },
+    {
+      lead: "Your context",
+      rest: "goes wherever you go.",
+      body: "Carry a chat or your memory to any AI, and pick up where you left off.",
+    },
+  ],
   features: {
     eyebrow: "What it does",
     title1: "Every AI you use,",

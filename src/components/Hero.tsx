@@ -7,10 +7,50 @@ import { useI18n } from "@/i18n";
 import { ASSETS, detectOs, downloadUrl, type Release } from "@/lib/release";
 
 const fade = (delay: number) => ({
-  initial: { opacity: 0, y: 16, filter: "blur(6px)" },
+  initial: { opacity: 0, y: 18, filter: "blur(8px)" },
   animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-  transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] as const },
+  transition: { duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] as const },
 });
+
+const APP_VARS = ["--claude", "--chatgpt", "--claude-code", "--codex", "--antigravity"];
+
+/** Five app colours orbiting, sized to the headline's text. */
+function AppsGlyph() {
+  return (
+    <span className="relative inline-block size-[0.82em] shrink-0 align-middle" aria-hidden>
+      <span className="absolute inset-0 rounded-full opacity-60 blur-xl" style={{ background: "radial-gradient(closest-side, var(--glow), transparent)" }} />
+      <motion.span className="absolute inset-0" animate={{ rotate: 360 }} transition={{ duration: 18, repeat: Infinity, ease: "linear" }}>
+        {APP_VARS.map((v, i) => {
+          const a = (i / APP_VARS.length) * Math.PI * 2 - Math.PI / 2;
+          return (
+            <span
+              key={v}
+              className="absolute size-[0.24em] -translate-x-1/2 -translate-y-1/2 rounded-full"
+              style={{ left: `${50 + Math.cos(a) * 36}%`, top: `${50 + Math.sin(a) * 36}%`, background: `var(${v})`, boxShadow: `0 0 0.18em var(${v})` }}
+            />
+          );
+        })}
+      </motion.span>
+      <span className="absolute left-1/2 top-1/2 size-[0.14em] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_0.3em_var(--primary)]" />
+    </span>
+  );
+}
+
+/** The Carryover logo as a glowing glyph inside the headline. */
+function LogoGlyph() {
+  return (
+    <span className="relative inline-block size-[0.86em] shrink-0 align-middle" aria-hidden>
+      <span className="absolute -inset-[20%] rounded-full opacity-80 blur-2xl" style={{ background: "radial-gradient(closest-side, var(--glow), transparent)" }} />
+      <motion.img
+        src={`${import.meta.env.BASE_URL}logo.png`}
+        alt=""
+        className="relative size-full rounded-[0.22em] shadow-[0_0_0.5em_-0.1em_var(--glow)]"
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      />
+    </span>
+  );
+}
 
 export function Hero({ release }: { release: Release }) {
   const { t } = useI18n();
@@ -20,14 +60,14 @@ export function Hero({ release }: { release: Release }) {
   const pointIcons = [Sparkle, HardDrive, KeyRound];
 
   const win = (
-    <Button asChild size="lg" className="h-12 rounded-full px-6 text-[15px] shadow-[0_8px_30px_var(--glow)]">
+    <Button asChild size="lg" variant={macFirst ? "outline" : "default"} className="h-12 rounded-xl px-6 text-[15px] font-medium shadow-[0_10px_40px_-10px_var(--glow)]">
       <a href={downloadUrl(ASSETS.windows)}>
         <WindowsIcon /> {t.hero.windows}
       </a>
     </Button>
   );
   const mac = release.hasMac ? (
-    <Button asChild size="lg" variant={macFirst ? "default" : "outline"} className="h-12 rounded-full px-6 text-[15px]">
+    <Button asChild size="lg" variant={macFirst ? "default" : "outline"} className="h-12 rounded-xl px-6 text-[15px] font-medium">
       <a href={downloadUrl(ASSETS.mac)}>
         <AppleIcon /> {t.hero.mac}
       </a>
@@ -35,38 +75,28 @@ export function Hero({ release }: { release: Release }) {
   ) : null;
 
   return (
-    <section id="top" className="relative overflow-hidden pt-28 sm:pt-32">
-      <div className="bg-grid pointer-events-none absolute inset-0 -z-10" />
+    <section id="top" className="dark relative overflow-hidden bg-black pb-40 pt-32 text-foreground sm:pt-40">
+      <div className="bg-grid pointer-events-none absolute inset-0 opacity-60" />
       <div
-        className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-70 blur-3xl"
+        className="pointer-events-none absolute bottom-[-30%] left-1/2 h-[700px] w-[1100px] -translate-x-1/2 rounded-full opacity-50 blur-3xl"
         style={{ background: "radial-gradient(closest-side, var(--glow), transparent)" }}
       />
 
-      <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
-        <motion.div {...fade(0)} className="inline-flex items-center gap-3 text-[13px] text-muted-foreground">
-          <span className="flex -space-x-1.5" aria-hidden>
-            {["--claude", "--chatgpt", "--claude-code", "--codex", "--antigravity"].map((c) => (
-              <span key={c} className="size-5 rounded-full border-2 border-background" style={{ background: `var(${c})` }} />
-            ))}
+      <div className="relative mx-auto max-w-6xl px-4 text-center sm:px-6">
+        <motion.h1 {...fade(0)} className="mx-auto max-w-5xl text-[clamp(2.9rem,8.5vw,6.6rem)] font-medium leading-[0.98] tracking-[-0.045em]">
+          <span className="text-fade block pb-[0.06em]">{t.hero.title1}</span>
+          <span className="mt-[0.04em] inline-flex flex-wrap items-center justify-center gap-x-[0.22em]">
+            <AppsGlyph />
+            <span>{t.hero.title2}</span>
+            <LogoGlyph />
           </span>
-          <span>
-            {t.hero.worksWith} <span className="text-foreground">Claude, ChatGPT, Claude Code, Codex</span> & <span className="text-foreground">Antigravity</span>
-          </span>
-        </motion.div>
-
-        <motion.h1
-          {...fade(0.08)}
-          className="mx-auto mt-6 max-w-4xl text-[clamp(2.6rem,7vw,5.2rem)] font-semibold leading-[1.02] tracking-[-0.035em]"
-        >
-          {t.hero.title1}{" "}
-          <span className="text-gradient inline-block whitespace-nowrap pr-2 font-serif font-normal italic tracking-[-0.01em]">{t.hero.title2}</span>
         </motion.h1>
 
-        <motion.p {...fade(0.16)} className="mx-auto mt-6 max-w-2xl text-[clamp(1rem,1.6vw,1.2rem)] leading-relaxed text-muted-foreground">
+        <motion.p {...fade(0.12)} className="mx-auto mt-8 max-w-2xl text-[clamp(1rem,1.5vw,1.15rem)] leading-relaxed text-muted-foreground">
           {t.hero.lead}
         </motion.p>
 
-        <motion.div {...fade(0.24)} className="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <motion.div {...fade(0.22)} className="mt-10 flex flex-wrap items-center justify-center gap-3">
           {macFirst ? (
             <>
               {mac}
@@ -78,15 +108,14 @@ export function Hero({ release }: { release: Release }) {
               {mac}
             </>
           )}
-          {!release.hasMac && (
-            <Button asChild size="lg" variant="ghost" className="h-12 rounded-full px-5 text-[15px]">
-              <a href="#demo">
-                {t.hero.see} <ArrowDown />
-              </a>
-            </Button>
-          )}
+          <Button asChild size="lg" variant="ghost" className="glow-ring h-12 rounded-xl bg-white/[0.03] px-6 text-[15px] font-medium hover:bg-white/[0.07]">
+            <a href="#demo">
+              {t.hero.see} <ArrowDown />
+            </a>
+          </Button>
         </motion.div>
-        <motion.ul {...fade(0.3)} className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted-foreground">
+
+        <motion.ul {...fade(0.3)} className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted-foreground">
           {t.hero.points.map((p, i) => {
             const Icon = pointIcons[i]!;
             return (
@@ -95,16 +124,15 @@ export function Hero({ release }: { release: Release }) {
               </li>
             );
           })}
+          <li className="text-muted-foreground/70">
+            {t.hero.version.replace("{v}", version)} · Windows{release.hasMac ? " · macOS" : ""}
+          </li>
         </motion.ul>
-        <motion.p {...fade(0.34)} className="mt-2 text-xs text-muted-foreground/80">
-          {t.hero.version.replace("{v}", version)} · Windows 10/11{release.hasMac ? " · macOS" : ` · ${t.hero.macSoon}`}
-        </motion.p>
 
-        <motion.div {...fade(0.36)} className="mx-auto mt-6 max-w-4xl">
+        <motion.div {...fade(0.4)} className="mx-auto mt-14 max-w-4xl">
           <HeroGraph />
         </motion.div>
       </div>
-
     </section>
   );
 }

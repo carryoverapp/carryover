@@ -70,6 +70,48 @@ const es: Dict = {
     ],
     summaryText: "Objetivo: añadir límites de uso a la API pública.\nDecidido: token bucket por clave de API, en Redis. Plan gratuito: 100 peticiones por minuto.\nPendiente: límites de los planes de pago.\nSiguiente paso: devolver 429 con Retry-After y añadir tests.",
   },
+  paths: {
+    title1: "Elige tu",
+    title2: "camino",
+    sub: "Carryover se adapta a cómo usas la IA, en el navegador o en la terminal.",
+    users: {
+      title: "Para quien usa IA a diario",
+      sub: "Claude y ChatGPT, por fin juntos.",
+      points: [
+        "Importa tus exportaciones oficiales de Claude y ChatGPT",
+        "Ve todos tus chats en un mapa con búsqueda",
+        "¿Llegaste al límite? Lleva el chat a otra IA",
+      ],
+      cta: "Descargar para Windows",
+    },
+    devs: {
+      title: "Para desarrolladores",
+      sub: "Claude Code, Codex y Antigravity, una sola memoria.",
+      points: [
+        "Las sesiones se importan solas, por proyecto",
+        "Los recuerdos aprobados van a CLAUDE.md y AGENTS.md",
+        "Servidor MCP integrado para cualquier cliente MCP",
+      ],
+      cta: "Ver funciones",
+    },
+  },
+  story: [
+    {
+      lead: "Tus IA",
+      rest: "no hablan entre sí.",
+      body: "Cada app guarda su propio historial. Cambias de herramienta y empiezas de cero.",
+    },
+    {
+      lead: "Carryover",
+      rest: "conecta lo que ya tienes.",
+      body: "Lee tus chats existentes en un grafo privado en tu ordenador.",
+    },
+    {
+      lead: "Tu contexto",
+      rest: "va contigo.",
+      body: "Lleva un chat o tu memoria a cualquier IA y sigue donde lo dejaste.",
+    },
+  ],
   features: {
     eyebrow: "Qué hace",
     title1: "Todas tus IA,",

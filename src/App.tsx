@@ -2,7 +2,8 @@ import { Demo } from "@/components/Demo";
 import { Features } from "@/components/Features";
 import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
-import { AppStrip, DownloadSection, Faq, Footer, How, Privacy } from "@/components/Sections";
+import { DownloadSection, Faq, Footer, Privacy } from "@/components/Sections";
+import { Paths, Sheet, Story } from "@/components/Story";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nProvider } from "@/i18n";
 import { useRelease } from "@/lib/release";
@@ -13,17 +14,19 @@ function Page() {
   return (
     <>
       <Nav />
-      <main>
+      <main className="bg-black">
         <Hero release={release} />
-        <Demo />
-        <div className="mt-24"><AppStrip /></div>
-        <Features />
-        <How />
-        <Privacy />
-        <Faq />
-        <DownloadSection release={release} />
+        <Sheet>
+          <Demo />
+          <Paths />
+          <Story />
+          <Features />
+          <Privacy />
+          <Faq />
+          <DownloadSection release={release} />
+          <Footer />
+        </Sheet>
       </main>
-      <Footer />
     </>
   );
 }
