@@ -5,9 +5,11 @@
 Carryover brings your Claude, ChatGPT, Claude Code, Codex and Antigravity chats into one private memory graph. Compare models side by side, carry a chat from one AI to another, and keep what they've learned about you in one place.
 
 **Website:** https://farazahmadnagrami.github.io/carryover-app/
-**Download:** [latest release](https://github.com/FarazAhmadNagrami/carryover-app/releases/latest) (Windows 10 and 11)
+**Download:** [latest release](https://github.com/FarazAhmadNagrami/carryover-app/releases/latest) (Windows 10 and 11; macOS coming)
 
-This repository holds the website and the installers. The app's source code is private.
+This repository holds the website (Vite, React, Tailwind, shadcn/ui, Motion) and the installers. The app's source code is private.
+
+Run the site locally with `pnpm install && pnpm dev`.
 
 ## Install
 
