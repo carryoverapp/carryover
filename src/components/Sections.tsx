@@ -107,7 +107,7 @@ export function Privacy() {
   );
 }
 
-function DownloadCard({ icon, title, desc, href, cta, soon, note }: { icon: React.ReactNode; title: string; desc: string; href?: string; cta: string; soon: string; note: string }) {
+function DownloadCard({ icon, title, desc, href, cta, soon, notes }: { icon: React.ReactNode; title: string; desc: string; href?: string; cta: string; soon: string; notes: string[] }) {
   return (
     <div className={cn("flex flex-col rounded-2xl border bg-card p-6", !href && "opacity-80")}>
       <div className="flex items-center gap-3">
@@ -124,7 +124,9 @@ function DownloadCard({ icon, title, desc, href, cta, soon, note }: { icon: Reac
           <Button size="lg" variant="outline" disabled className="h-11 w-full rounded-full">{soon}</Button>
         )}
       </div>
-      <p className="mt-4 flex gap-2 text-[13px] leading-relaxed text-muted-foreground"><Info className="mt-0.5 size-3.5 shrink-0" />{note}</p>
+      {notes.map((n) => (
+        <p key={n} className="mt-3 flex gap-2 text-[13px] leading-relaxed text-muted-foreground first-of-type:mt-4"><Info className="mt-0.5 size-3.5 shrink-0" />{n}</p>
+      ))}
     </div>
   );
 }
@@ -142,8 +144,8 @@ export function DownloadSection({ release }: { release: Release }) {
         </h2>
       </motion.div>
       <motion.div {...reveal} transition={{ ...reveal.transition, delay: 0.1 }} className="mx-auto mt-12 grid max-w-4xl gap-4 md:grid-cols-2">
-        <DownloadCard icon={<WindowsIcon />} title="Windows" desc={d.windowsDesc} href={downloadUrl(ASSETS.windows)} cta={t.hero.windows} soon={d.soon} note={d.smartscreen} />
-        <DownloadCard icon={<AppleIcon />} title="macOS" desc={d.macDesc} href={release.hasMac ? downloadUrl(ASSETS.mac) : undefined} cta={t.hero.mac} soon={d.soon} note={d.gatekeeper} />
+        <DownloadCard icon={<WindowsIcon />} title="Windows" desc={d.windowsDesc} href={downloadUrl(ASSETS.windows)} cta={t.hero.windows} soon={d.soon} notes={[d.chrome, d.smartscreen]} />
+        <DownloadCard icon={<AppleIcon />} title="macOS" desc={d.macDesc} href={release.hasMac ? downloadUrl(ASSETS.mac) : undefined} cta={t.hero.mac} soon={d.soon} notes={[d.gatekeeper]} />
       </motion.div>
       <p className="mt-8 text-center text-sm">
         <a href={RELEASES_URL} className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">{d.allReleases} <ArrowUpRight className="size-3.5" /></a>

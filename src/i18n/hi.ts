@@ -160,6 +160,7 @@ const hi: Dict = {
     macDesc: "macOS · Apple silicon और Intel",
     soon: "जल्द आ रहा है",
     smartscreen: "Windows \"Windows protected your PC\" दिखा सकता है। नए ऐप्स के लिए यह सामान्य है जो अभी code-signed नहीं हैं: More info पर क्लिक करें, फिर Run anyway।",
+    chrome: "Chrome \"Unverified download blocked\" दिखा सकता है, क्योंकि ऐप नया है और अभी code-signed नहीं है। उसके बगल वाले तीर पर क्लिक करें और Download unverified file चुनें।",
     gatekeeper: "Mac पर पहली बार: Applications में Carryover पर राइट-क्लिक करें, Open चुनें, फिर दोबारा Open।",
     allReleases: "सभी रिलीज़",
   },

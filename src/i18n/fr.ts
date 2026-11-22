@@ -163,6 +163,7 @@ const fr: Dict = {
     macDesc: "macOS · Apple silicon et Intel",
     soon: "Bientôt",
     smartscreen: "Windows peut afficher « Windows protected your PC ». C'est normal pour une nouvelle app pas encore signée : cliquez sur More info, puis Run anyway.",
+    chrome: "Chrome peut afficher « Unverified download blocked » car l'app est nouvelle et pas encore signée. Cliquez sur la flèche à côté et choisissez Download unverified file.",
     gatekeeper: "Sur Mac, la première fois : clic droit sur Carryover dans Applications, choisissez Ouvrir, puis Ouvrir à nouveau.",
     allReleases: "Toutes les versions",
   },

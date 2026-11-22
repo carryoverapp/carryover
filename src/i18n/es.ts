@@ -163,6 +163,7 @@ const es: Dict = {
     macDesc: "macOS · Apple silicon e Intel",
     soon: "Muy pronto",
     smartscreen: "Windows puede mostrar \"Windows protected your PC\". Es normal en apps nuevas que aún no están firmadas: haz clic en More info y luego en Run anyway.",
+    chrome: "Chrome puede mostrar \"Unverified download blocked\" porque la app es nueva y aún no está firmada. Haz clic en la flecha de al lado y elige Download unverified file.",
     gatekeeper: "En Mac, la primera vez: haz clic derecho en Carryover en Aplicaciones, elige Abrir y luego Abrir otra vez.",
     allReleases: "Todas las versiones",
   },

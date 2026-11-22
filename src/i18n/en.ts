@@ -160,6 +160,7 @@ const en = {
     macDesc: "macOS · Apple silicon and Intel",
     soon: "Coming soon",
     smartscreen: "Windows may show \"Windows protected your PC\". That's normal for new apps that aren't code-signed yet: click More info, then Run anyway.",
+    chrome: "Chrome may show \"Unverified download blocked\" because the app is new and not code-signed yet. Click the arrow next to it and choose Download unverified file.",
     gatekeeper: "On Mac, the first time: right-click Carryover in Applications, choose Open, then Open again.",
     allReleases: "All releases",
   },
