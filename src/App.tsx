@@ -1,3 +1,4 @@
+import { Demo } from "@/components/Demo";
 import { Features } from "@/components/Features";
 import { Hero } from "@/components/Hero";
 import { Nav } from "@/components/Nav";
@@ -14,6 +15,7 @@ function Page() {
       <Nav />
       <main>
         <Hero release={release} />
+        <Demo />
         <div className="mt-24"><AppStrip /></div>
         <Features />
         <How />

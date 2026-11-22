@@ -6,7 +6,7 @@ const fr: Dict = {
   theme: { label: "Thème", light: "Clair", dark: "Sombre", system: "Système" },
   lang: { label: "Langue" },
   hero: {
-    badge: "Gratuit · Tourne sur votre ordinateur · Sans clé d'API",
+    points: ["Gratuit", "Tourne sur votre ordinateur", "Sans clé d'API"],
     title1: "Une mémoire pour",
     title2: "toutes vos IA",
     lead: "Carryover réunit vos conversations Claude, ChatGPT, Claude Code, Codex et Antigravity dans un graphe de mémoire privé. Comparez les modèles côte à côte, passez une conversation d'une IA à une autre et gardez au même endroit ce qu'elles ont appris sur vous.",
@@ -19,7 +19,57 @@ const fr: Dict = {
     worksWith: "Fonctionne avec",
   },
   graph: { memory: "Votre mémoire", carrying: "Une conversation part vers Codex" },
-  demo: { caption: "Le graphe de mémoire, avec des conversations d'exemple." },
+  demo: {
+    eyebrow: "Essayez",
+    title: "Passez une conversation de Claude à Codex",
+    sub: "Une démo en direct avec des conversations d'exemple. Glissez, zoomez et cliquez, comme dans l'app.",
+    label: "Démo interactive · conversations d'exemple",
+    steps: [
+      {
+        title: "Ouvrez une conversation",
+        hint: "Cliquez sur « Rate limiting the API » sous Claude pour la lire.",
+      },
+      {
+        title: "Passez-la",
+        hint: "Glissez la conversation sur le cercle Codex.",
+      },
+      {
+        title: "Rédigez la passation",
+        hint: "Appuyez sur « Rédiger le résumé ». Un modèle résume la conversation.",
+      },
+      {
+        title: "Continuez dans Codex",
+        hint: "Appuyez sur « Continuer dans Codex ». La conversation apparaît sous les deux apps.",
+      },
+    ],
+    showMe: "Montrez-moi",
+    restart: "Recommencer",
+    doneTitle: "Voilà Carryover.",
+    doneBody: "L'original reste dans Claude, une copie liée apparaît sous Codex, et vous reprenez là où vous en étiez. Dans l'app, cela marche avec vos vraies conversations.",
+    dragHint: "Glissez cette conversation sur une autre app pour la passer.",
+    messages: "{n} messages",
+    you: "Vous",
+    carryTo: "Passer à Codex",
+    write: "Rédiger le résumé",
+    writing: "Rédaction…",
+    summary: "Résumé de passation",
+    continue: "Continuer dans Codex",
+    continued: "Ouvert dans Codex",
+    close: "Fermer",
+    chat: [
+      ["user", "Mon API sature aux heures de pointe. Comment ajouter une limite de débit ?"],
+      [
+        "assistant",
+        "Utilisez un token bucket par clé d'API, stocké dans Redis pour que tous les serveurs partagent les compteurs.",
+      ],
+      ["user", "Va pour Redis. Les utilisateurs gratuits ont 100 requêtes par minute."],
+      [
+        "assistant",
+        "C'est fait. Ensuite, renvoyez 429 avec l'en-tête Retry-After et ajoutez des tests.",
+      ],
+    ],
+    summaryText: "Objectif : ajouter une limite de débit à l'API publique.\nDécidé : token bucket par clé d'API, dans Redis. Offre gratuite : 100 requêtes par minute.\nQuestion ouverte : limites des offres payantes.\nProchaine étape : renvoyer 429 avec Retry-After, puis ajouter des tests.",
+  },
   features: {
     eyebrow: "Ce qu'il fait",
     title1: "Toutes vos IA,",

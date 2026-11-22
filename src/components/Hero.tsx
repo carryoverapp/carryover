@@ -1,6 +1,5 @@
-import { ArrowDown } from "lucide-react";
-import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { ArrowDown, HardDrive, KeyRound, Sparkle } from "lucide-react";
+import { motion } from "motion/react";
 import { HeroGraph } from "@/components/HeroGraph";
 import { AppleIcon, WindowsIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -18,11 +17,7 @@ export function Hero({ release }: { release: Release }) {
   const os = detectOs();
   const macFirst = os === "mac" && release.hasMac;
   const version = release.version ?? "0.1.0";
-
-  const shot = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: shot, offset: ["start end", "start 0.35"] });
-  const rotate = useTransform(scrollYProgress, [0, 1], [18, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [0.92, 1]);
+  const pointIcons = [Sparkle, HardDrive, KeyRound];
 
   const win = (
     <Button asChild size="lg" className="h-12 rounded-full px-6 text-[15px] shadow-[0_8px_30px_var(--glow)]">
@@ -48,17 +43,16 @@ export function Hero({ release }: { release: Release }) {
       />
 
       <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
-        <motion.a
-          {...fade(0)}
-          href="#download"
-          className="inline-flex items-center gap-2 rounded-full border bg-card/60 px-3.5 py-1.5 text-xs text-muted-foreground backdrop-blur sm:text-[13px]"
-        >
-          <span className="relative flex size-2">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-60" />
-            <span className="relative inline-flex size-2 rounded-full bg-primary" />
+        <motion.div {...fade(0)} className="inline-flex items-center gap-3 text-[13px] text-muted-foreground">
+          <span className="flex -space-x-1.5" aria-hidden>
+            {["--claude", "--chatgpt", "--claude-code", "--codex", "--antigravity"].map((c) => (
+              <span key={c} className="size-5 rounded-full border-2 border-background" style={{ background: `var(${c})` }} />
+            ))}
           </span>
-          {t.hero.badge}
-        </motion.a>
+          <span>
+            {t.hero.worksWith} <span className="text-foreground">Claude, ChatGPT, Claude Code, Codex</span> & <span className="text-foreground">Antigravity</span>
+          </span>
+        </motion.div>
 
         <motion.h1
           {...fade(0.08)}
@@ -92,7 +86,17 @@ export function Hero({ release }: { release: Release }) {
             </Button>
           )}
         </motion.div>
-        <motion.p {...fade(0.3)} className="mt-4 text-[13px] text-muted-foreground">
+        <motion.ul {...fade(0.3)} className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted-foreground">
+          {t.hero.points.map((p, i) => {
+            const Icon = pointIcons[i]!;
+            return (
+              <li key={p} className="flex items-center gap-1.5">
+                <Icon className="size-3.5 text-primary" /> {p}
+              </li>
+            );
+          })}
+        </motion.ul>
+        <motion.p {...fade(0.34)} className="mt-2 text-xs text-muted-foreground/80">
           {t.hero.version.replace("{v}", version)} · Windows 10/11{release.hasMac ? " · macOS" : ` · ${t.hero.macSoon}`}
         </motion.p>
 
@@ -101,28 +105,6 @@ export function Hero({ release }: { release: Release }) {
         </motion.div>
       </div>
 
-      <div id="demo" ref={shot} className="mx-auto mt-6 max-w-6xl px-4 [perspective:1400px] sm:px-6">
-        <motion.div
-          style={{ rotateX: rotate, scale }}
-          className="overflow-hidden rounded-2xl border bg-card p-1.5 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.45)] sm:p-2"
-        >
-          <div className="flex items-center gap-1.5 px-3 pb-2 pt-1.5">
-            <i className="size-2.5 rounded-full bg-[#ff5f57]" />
-            <i className="size-2.5 rounded-full bg-[#febc2e]" />
-            <i className="size-2.5 rounded-full bg-[#28c840]" />
-            <span className="ml-3 text-xs text-muted-foreground">Carryover</span>
-          </div>
-          <img
-            src={`${import.meta.env.BASE_URL}screenshot.png`}
-            alt={t.demo.caption}
-            className="w-full rounded-xl border"
-            loading="lazy"
-            width={2040}
-            height={1275}
-          />
-        </motion.div>
-        <p className="mt-4 text-center text-sm text-muted-foreground">{t.demo.caption}</p>
-      </div>
     </section>
   );
 }

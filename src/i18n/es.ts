@@ -6,7 +6,7 @@ const es: Dict = {
   theme: { label: "Tema", light: "Claro", dark: "Oscuro", system: "Sistema" },
   lang: { label: "Idioma" },
   hero: {
-    badge: "Gratis · Funciona en tu ordenador · Sin claves de API",
+    points: ["Gratis", "Funciona en tu ordenador", "Sin claves de API"],
     title1: "Una memoria para",
     title2: "todas tus IA",
     lead: "Carryover reúne tus chats de Claude, ChatGPT, Claude Code, Codex y Antigravity en un grafo de memoria privado. Compara modelos lado a lado, lleva un chat de una IA a otra y guarda en un solo lugar lo que han aprendido sobre ti.",
@@ -19,7 +19,57 @@ const es: Dict = {
     worksWith: "Funciona con",
   },
   graph: { memory: "Tu memoria", carrying: "Llevando un chat a Codex" },
-  demo: { caption: "El grafo de memoria, con chats de ejemplo." },
+  demo: {
+    eyebrow: "Pruébalo",
+    title: "Lleva un chat de Claude a Codex",
+    sub: "Una demo en vivo con chats de ejemplo. Arrastra, haz zoom y clic, igual que en la app.",
+    label: "Demo interactiva · chats de ejemplo",
+    steps: [
+      {
+        title: "Abre un chat",
+        hint: "Haz clic en “Rate limiting the API” bajo Claude para leerlo.",
+      },
+      {
+        title: "Llévalo",
+        hint: "Arrastra el chat al círculo de Codex.",
+      },
+      {
+        title: "Escribe el traspaso",
+        hint: "Pulsa “Escribir resumen”. Un modelo resume el chat.",
+      },
+      {
+        title: "Sigue en Codex",
+        hint: "Pulsa “Seguir en Codex”. El chat aparece ahora en las dos apps.",
+      },
+    ],
+    showMe: "Muéstramelo",
+    restart: "Empezar de nuevo",
+    doneTitle: "Eso es Carryover.",
+    doneBody: "El original se queda en Claude, aparece una copia enlazada en Codex y sigues donde lo dejaste. En la app funciona con tus chats reales.",
+    dragHint: "Arrastra este chat a otra app para llevarlo.",
+    messages: "{n} mensajes",
+    you: "Tú",
+    carryTo: "Llevar a Codex",
+    write: "Escribir resumen",
+    writing: "Escribiendo…",
+    summary: "Resumen de traspaso",
+    continue: "Seguir en Codex",
+    continued: "Abierto en Codex",
+    close: "Cerrar",
+    chat: [
+      ["user", "Mi API se satura en horas punta. ¿Cómo añado límites de uso?"],
+      [
+        "assistant",
+        "Usa un token bucket por clave de API, guardado en Redis para que todos los servidores compartan los contadores.",
+      ],
+      ["user", "Vamos con Redis. Los usuarios gratuitos tienen 100 peticiones por minuto."],
+      [
+        "assistant",
+        "Hecho. Ahora devuelve 429 con la cabecera Retry-After y añade tests de los límites.",
+      ],
+    ],
+    summaryText: "Objetivo: añadir límites de uso a la API pública.\nDecidido: token bucket por clave de API, en Redis. Plan gratuito: 100 peticiones por minuto.\nPendiente: límites de los planes de pago.\nSiguiente paso: devolver 429 con Retry-After y añadir tests.",
+  },
   features: {
     eyebrow: "Qué hace",
     title1: "Todas tus IA,",

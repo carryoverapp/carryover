@@ -6,7 +6,7 @@ const de: Dict = {
   theme: { label: "Design", light: "Hell", dark: "Dunkel", system: "System" },
   lang: { label: "Sprache" },
   hero: {
-    badge: "Kostenlos · Läuft auf deinem Computer · Keine API-Schlüssel",
+    points: ["Kostenlos", "Läuft auf deinem Computer", "Keine API-Schlüssel"],
     title1: "Ein Gedächtnis für",
     title2: "all deine KIs",
     lead: "Carryover bringt deine Chats aus Claude, ChatGPT, Claude Code, Codex und Antigravity in einen privaten Gedächtnis-Graphen. Vergleiche Modelle nebeneinander, nimm einen Chat von einer KI zur nächsten mit und behalte an einem Ort, was sie über dich gelernt haben.",
@@ -19,7 +19,57 @@ const de: Dict = {
     worksWith: "Funktioniert mit",
   },
   graph: { memory: "Dein Gedächtnis", carrying: "Ein Chat wandert zu Codex" },
-  demo: { caption: "Der Gedächtnis-Graph mit Beispiel-Chats." },
+  demo: {
+    eyebrow: "Ausprobieren",
+    title: "Nimm einen Chat von Claude zu Codex mit",
+    sub: "Eine Live-Demo mit Beispiel-Chats. Ziehen, zoomen und klicken, genau wie in der App.",
+    label: "Interaktive Demo · Beispiel-Chats",
+    steps: [
+      {
+        title: "Chat öffnen",
+        hint: "Klicke unter Claude auf „Rate limiting the API“, um ihn zu lesen.",
+      },
+      {
+        title: "Mitnehmen",
+        hint: "Zieh den Chat auf den Codex-Kreis.",
+      },
+      {
+        title: "Übergabe schreiben",
+        hint: "Drück auf „Zusammenfassung schreiben“. Ein Modell fasst den Chat zusammen.",
+      },
+      {
+        title: "In Codex weitermachen",
+        hint: "Drück auf „In Codex weitermachen“. Der Chat erscheint jetzt unter beiden Apps.",
+      },
+    ],
+    showMe: "Zeig's mir",
+    restart: "Neu starten",
+    doneTitle: "Das ist Carryover.",
+    doneBody: "Das Original bleibt in Claude, unter Codex erscheint eine verknüpfte Kopie, und du machst dort weiter, wo du warst. In der App funktioniert das mit deinen echten Chats.",
+    dragHint: "Zieh diesen Chat auf eine andere App, um ihn mitzunehmen.",
+    messages: "{n} Nachrichten",
+    you: "Du",
+    carryTo: "Zu Codex mitnehmen",
+    write: "Zusammenfassung schreiben",
+    writing: "Schreibt…",
+    summary: "Übergabe-Zusammenfassung",
+    continue: "In Codex weitermachen",
+    continued: "In Codex geöffnet",
+    close: "Schließen",
+    chat: [
+      ["user", "Meine API wird zu Spitzenzeiten überlastet. Wie baue ich Rate Limiting ein?"],
+      [
+        "assistant",
+        "Nimm einen Token Bucket pro API-Schlüssel, gespeichert in Redis, damit alle Server dieselben Zähler sehen.",
+      ],
+      ["user", "Redis passt. Kostenlose Nutzer bekommen 100 Anfragen pro Minute."],
+      [
+        "assistant",
+        "Erledigt. Als Nächstes 429 mit Retry-After-Header zurückgeben und Tests für die Limits schreiben.",
+      ],
+    ],
+    summaryText: "Ziel: Rate Limiting für die öffentliche API.\nEntschieden: Token Bucket pro API-Schlüssel, in Redis. Gratis-Plan: 100 Anfragen pro Minute.\nOffen: Limits für bezahlte Pläne.\nNächster Schritt: 429 mit Retry-After zurückgeben, dann Tests schreiben.",
+  },
   features: {
     eyebrow: "Was es kann",
     title1: "All deine KIs,",
