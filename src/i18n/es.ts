@@ -174,6 +174,8 @@ const es: Dict = {
     allReleases: "Todas las versiones",
   },
   faq: {
+    installQ: "¿Por qué mi navegador u ordenador muestra un aviso?",
+    installIntro: "Carryover es nuevo y aún no está firmado, así que puede aparecer un aviso una sola vez. Así puedes continuar:",
     eyebrow: "Preguntas",
     title: "Preguntas frecuentes",
     items: [

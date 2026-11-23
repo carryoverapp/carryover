@@ -171,6 +171,8 @@ const en = {
     allReleases: "All releases",
   },
   faq: {
+    installQ: "Why does my browser or computer show a warning?",
+    installIntro: "Carryover is new and isn't code-signed yet, so you may see a one-time warning. Here's how to continue:",
     eyebrow: "FAQ",
     title: "Questions",
     items: [

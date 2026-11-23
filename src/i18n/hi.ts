@@ -171,6 +171,8 @@ const hi: Dict = {
     allReleases: "सभी रिलीज़",
   },
   faq: {
+    installQ: "मेरा ब्राउज़र या कंप्यूटर चेतावनी क्यों दिखाता है?",
+    installIntro: "Carryover नया है और अभी code-signed नहीं है, इसलिए एक बार चेतावनी दिख सकती है। आगे ऐसे बढ़ें:",
     eyebrow: "सवाल",
     title: "अक्सर पूछे जाने वाले सवाल",
     items: [

@@ -174,6 +174,8 @@ const fr: Dict = {
     allReleases: "Toutes les versions",
   },
   faq: {
+    installQ: "Pourquoi mon navigateur ou mon ordinateur affiche-t-il un avertissement ?",
+    installIntro: "Carryover est nouveau et pas encore signé, vous verrez donc peut-être un avertissement une seule fois. Voici comment continuer :",
     eyebrow: "FAQ",
     title: "Questions fréquentes",
     items: [

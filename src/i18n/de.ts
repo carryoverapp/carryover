@@ -174,6 +174,8 @@ const de: Dict = {
     allReleases: "Alle Versionen",
   },
   faq: {
+    installQ: "Warum zeigt mein Browser oder Computer eine Warnung?",
+    installIntro: "Carryover ist neu und noch nicht signiert, daher siehst du eventuell einmalig eine Warnung. So geht es weiter:",
     eyebrow: "FAQ",
     title: "Häufige Fragen",
     items: [
