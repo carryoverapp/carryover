@@ -1,5 +1,14 @@
 import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useRef } from "react";
 import { useI18n } from "@/i18n";
+
+/*
+ * The hero animation runs on the browser's own animation engine (SVG
+ * <animateMotion> and CSS keyframes), not JavaScript per frame, so it stays
+ * smooth while the page scrolls. Each moving thing follows its path in one
+ * eased curve instead of many small eased steps (which looked stop-and-go).
+ * Everything pauses while the hero is off screen.
+ */
 
 type P = { x: number; y: number };
 const CORE: P = { x: 500, y: 270 };
@@ -12,17 +21,6 @@ const APPS = [
   { id: "antigravity", label: "Antigravity", color: "var(--antigravity)", at: { x: 850, y: 115 } },
 ] as const;
 
-/** Points along a quadratic curve from a to b, bent toward `bend`. */
-function curve(a: P, b: P, bend: P, n = 24) {
-  const xs: number[] = [];
-  const ys: number[] = [];
-  for (let i = 0; i <= n; i++) {
-    const t = i / n;
-    xs.push((1 - t) ** 2 * a.x + 2 * (1 - t) * t * bend.x + t ** 2 * b.x);
-    ys.push((1 - t) ** 2 * a.y + 2 * (1 - t) * t * bend.y + t ** 2 * b.y);
-  }
-  return { xs, ys };
-}
 const mid = (a: P, b: P, lift = 0): P => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 - lift });
 const pathD = (a: P, b: P, c: P) => `M${a.x},${a.y} Q${c.x},${c.y} ${b.x},${b.y}`;
 
@@ -35,15 +33,41 @@ const SATELLITES = APPS.flatMap((app, i) =>
   }),
 );
 
+const EASE = "0.45 0 0.25 1"; // one smooth ease-in-out over the whole path
+const CARRY_PATH = pathD(APPS[0].at, APPS[3].at, { x: 520, y: -40 });
+
+const CSS = `
+.hg-flow { animation: hg-dash 6s linear infinite; }
+@keyframes hg-dash { to { stroke-dashoffset: -200; } }
+.hg-bob { transform-box: fill-box; animation: hg-bob 4s ease-in-out infinite; }
+@keyframes hg-bob { 50% { transform: translateY(-5px); } }
+.hg-pulse { transform-box: fill-box; transform-origin: center; animation: hg-pulse 2.6s ease-out infinite; }
+@keyframes hg-pulse { from { transform: scale(1); opacity: .6; } to { transform: scale(1.9); opacity: 0; } }
+.hg-paused * { animation-play-state: paused !important; }
+`;
+
 export function HeroGraph() {
   const { t } = useI18n();
   const still = useReducedMotion();
-  const from = APPS[0].at;
-  const to = APPS[3].at;
-  const carry = curve(from, to, { x: 520, y: -40 }, 40);
+  const svg = useRef<SVGSVGElement>(null);
+
+  // Pause both CSS and SVG animations while the hero isn't visible.
+  useEffect(() => {
+    const el = svg.current;
+    if (!el || still) return;
+    const io = new IntersectionObserver(([e]) => {
+      const visible = !!e?.isIntersecting;
+      el.classList.toggle("hg-paused", !visible);
+      if (visible) el.unpauseAnimations();
+      else el.pauseAnimations();
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [still]);
 
   return (
-    <svg viewBox="0 0 1000 560" className="h-auto w-full select-none" role="img" aria-label={t.graph.memory}>
+    <svg ref={svg} viewBox="0 0 1000 560" className="h-auto w-full select-none" role="img" aria-label={t.graph.memory}>
+      <style>{CSS}</style>
       <defs>
         <radialGradient id="core-glow">
           <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.45" />
@@ -52,57 +76,59 @@ export function HeroGraph() {
         <clipPath id="core-clip">
           <rect x={CORE.x - 42} y={CORE.y - 42} width="84" height="84" rx="22" />
         </clipPath>
+        {APPS.map((app) => (
+          <path key={app.id} id={`hg-path-${app.id}`} d={pathD(app.at, CORE, mid(app.at, CORE, 30))} />
+        ))}
+        <path id="hg-carry" d={CARRY_PATH} />
       </defs>
 
       {/* links from each app into the core */}
       {APPS.map((app) => {
-        const c = mid(app.at, CORE, 30);
+        const d = pathD(app.at, CORE, mid(app.at, CORE, 30));
         return (
           <g key={app.id}>
-            <path d={pathD(app.at, CORE, c)} fill="none" stroke={app.color} strokeOpacity="0.28" strokeWidth="1.5" />
-            <motion.path
-              d={pathD(app.at, CORE, c)}
+            <path d={d} fill="none" stroke={app.color} strokeOpacity="0.28" strokeWidth="1.5" />
+            <path
+              d={d}
+              className={still ? undefined : "hg-flow"}
               fill="none"
               stroke={app.color}
               strokeWidth="2"
               strokeLinecap="round"
               strokeDasharray="6 14"
-              initial={{ strokeDashoffset: 0 }}
-              animate={still ? undefined : { strokeDashoffset: -200 }}
-              transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
               opacity={0.7}
             />
           </g>
         );
       })}
 
-      {/* chats flowing into memory */}
+      {/* chats flowing into memory: each glides the whole way in one smooth curve */}
       {!still &&
-        APPS.map((app, i) => {
-          const { xs, ys } = curve(app.at, CORE, mid(app.at, CORE, 30));
-          return [0, 1].map((n) => (
-            <motion.circle
-              key={`${app.id}-${n}`}
-              r="4"
-              fill={app.color}
-              initial={{ cx: xs[0], cy: ys[0], opacity: 0 }}
-              animate={{ cx: xs, cy: ys, opacity: [0, 1, 1, 0] }}
-              transition={{ duration: 3.2, repeat: Infinity, delay: i * 0.7 + n * 1.6, ease: "easeInOut" }}
-            />
-          ));
-        })}
+        APPS.map((app, i) =>
+          [0, 1].map((n) => {
+            const begin = `${(i * 0.7 + n * 1.6).toFixed(1)}s`;
+            return (
+              <circle key={`${app.id}-${n}`} r="4" fill={app.color} opacity="0">
+                <animateMotion dur="3.2s" begin={begin} repeatCount="indefinite" calcMode="spline" keyPoints="0;1" keyTimes="0;1" keySplines={EASE}>
+                  <mpath href={`#hg-path-${app.id}`} />
+                </animateMotion>
+                <animate attributeName="opacity" dur="3.2s" begin={begin} repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.15;0.85;1" />
+              </circle>
+            );
+          }),
+        )}
 
       {/* satellites */}
       {SATELLITES.map(({ app, k, x, y }) => (
-        <motion.circle
+        <circle
           key={`${app.id}-s${k}`}
+          className={still ? undefined : "hg-bob"}
+          style={{ animationDuration: `${3 + (k % 4)}s`, animationDelay: `${-k * 0.4}s` }}
           cx={x}
           cy={y}
           r={k % 3 === 0 ? 3.5 : 2.5}
           fill={app.color}
           opacity={0.55}
-          animate={still ? undefined : { cy: [y, y - 5, y] }}
-          transition={{ duration: 3 + (k % 4), repeat: Infinity, ease: "easeInOut", delay: k * 0.3 }}
         />
       ))}
 
@@ -131,20 +157,7 @@ export function HeroGraph() {
 
       {/* the memory core */}
       <circle cx={CORE.x} cy={CORE.y} r="120" fill="url(#core-glow)" />
-      {!still && (
-        <motion.circle
-          cx={CORE.x}
-          cy={CORE.y}
-          r="56"
-          fill="none"
-          stroke="var(--primary)"
-          strokeWidth="1.5"
-          initial={{ scale: 1, opacity: 0.6 }}
-          animate={{ scale: 1.9, opacity: 0 }}
-          transition={{ duration: 2.6, repeat: Infinity, ease: "easeOut" }}
-          style={{ transformOrigin: `${CORE.x}px ${CORE.y}px` }}
-        />
-      )}
+      {!still && <circle className="hg-pulse" cx={CORE.x} cy={CORE.y} r="56" fill="none" stroke="var(--primary)" strokeWidth="1.5" />}
       <rect x={CORE.x - 46} y={CORE.y - 46} width="92" height="92" rx="25" fill="var(--card)" stroke="var(--border)" />
       <image
         href={`${import.meta.env.BASE_URL}logo.png`}
@@ -164,27 +177,28 @@ export function HeroGraph() {
         {t.graph.memory}
       </text>
 
-      {/* a chat being carried from Claude to Codex */}
-      <path
-        d={pathD(from, to, { x: 520, y: -40 })}
-        fill="none"
-        stroke="var(--primary)"
-        strokeOpacity="0.35"
-        strokeWidth="1.5"
-        strokeDasharray="4 6"
-      />
+      {/* a chat being carried from Claude to Codex: 4.5 s of travel, then a short rest */}
+      <path d={CARRY_PATH} fill="none" stroke="var(--primary)" strokeOpacity="0.35" strokeWidth="1.5" strokeDasharray="4 6" />
       {!still && (
-        <motion.g
-          initial={{ x: carry.xs[0], y: carry.ys[0], opacity: 0 }}
-          animate={{ x: carry.xs, y: carry.ys, opacity: [0, 1, 1, 1, 1, 0] }}
-          transition={{ duration: 4.5, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" }}
-        >
+        <g opacity="0">
+          <animateMotion
+            dur="6.3s"
+            begin="0.8s"
+            repeatCount="indefinite"
+            calcMode="spline"
+            keyPoints="0;1;1"
+            keyTimes="0;0.714;1"
+            keySplines={`${EASE};0 0 1 1`}
+          >
+            <mpath href="#hg-carry" />
+          </animateMotion>
+          <animate attributeName="opacity" dur="6.3s" begin="0.8s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.66;0.714;1" />
           <rect x="-84" y="-17" width="168" height="34" rx="10" fill="var(--card)" stroke="var(--primary)" strokeWidth="1.5" />
           <circle cx="-68" cy="0" r="5" fill="var(--claude)" />
           <text x="-56" y="5" className="fill-foreground text-[13px] font-medium" style={{ fontFamily: "var(--font-sans)" }}>
             LoRA fine-tuning plan
           </text>
-        </motion.g>
+        </g>
       )}
       <text
         x="515"
