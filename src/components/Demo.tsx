@@ -19,6 +19,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
+import { track } from "@/lib/track";
 import { cn } from "@/lib/utils";
 
 /* ---------- sample graph, styled like the app's Memory graph ---------- */
@@ -287,6 +288,7 @@ function Canvas() {
           ],
     );
     setStep(4);
+    track("demo-finished");
     window.setTimeout(() => frame(true), 60);
   }, [frame, setNodes]);
 

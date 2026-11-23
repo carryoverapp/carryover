@@ -4,6 +4,7 @@ import { HeroGraph } from "@/components/HeroGraph";
 import { AppleIcon, WindowsIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
+import { track } from "@/lib/track";
 import { ASSETS, detectOs, downloadUrl, type Release } from "@/lib/release";
 
 const fade = (delay: number) => ({
@@ -68,14 +69,14 @@ export function Hero({ release }: { release: Release }) {
 
   const win = (
     <Button asChild size="lg" variant={macFirst ? "outline" : "default"} className="h-12 rounded-xl px-6 text-[15px] font-medium shadow-[0_10px_40px_-10px_var(--glow)]">
-      <a href={downloadUrl(ASSETS.windows)}>
+      <a href={downloadUrl(ASSETS.windows)} onClick={() => track("download-windows")}>
         <WindowsIcon /> {t.hero.windows}
       </a>
     </Button>
   );
   const mac = release.hasMac ? (
     <Button asChild size="lg" variant={macFirst ? "default" : "outline"} className="h-12 rounded-xl px-6 text-[15px] font-medium">
-      <a href={downloadUrl(ASSETS.mac)}>
+      <a href={downloadUrl(ASSETS.mac)} onClick={() => track("download-mac")}>
         <AppleIcon /> {t.hero.mac}
       </a>
     </Button>

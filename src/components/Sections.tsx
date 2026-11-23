@@ -4,6 +4,7 @@ import { AppleIcon, GithubIcon, WindowsIcon } from "@/components/icons";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
+import { track } from "@/lib/track";
 import { ASSETS, ISSUES_URL, RELEASES_URL, downloadUrl, type Release } from "@/lib/release";
 import { cn } from "@/lib/utils";
 
@@ -119,7 +120,7 @@ function DownloadCard({ icon, title, desc, href, cta, soon, notes }: { icon: Rea
       </div>
       <div className="mt-6">
         {href ? (
-          <Button asChild size="lg" className="h-11 w-full rounded-full"><a href={href}>{cta}</a></Button>
+          <Button asChild size="lg" className="h-11 w-full rounded-full"><a href={href} onClick={() => track(href.endsWith(".dmg") ? "download-mac" : "download-windows")}>{cta}</a></Button>
         ) : (
           <Button size="lg" variant="outline" disabled className="h-11 w-full rounded-full">{soon}</Button>
         )}

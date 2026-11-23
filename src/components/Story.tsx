@@ -4,6 +4,7 @@ import { useRef, useState, type ReactNode } from "react";
 import { WindowsIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
+import { track } from "@/lib/track";
 import { ASSETS, downloadUrl } from "@/lib/release";
 import { cn } from "@/lib/utils";
 
@@ -101,7 +102,7 @@ function PathCard({ title, sub, points, cta, href, primary, visual, i }: { title
             ))}
           </ul>
           <Button asChild variant={primary ? "default" : "secondary"} className="mt-7 h-11 rounded-xl px-5">
-            <a href={href}>{cta}</a>
+            <a href={href} onClick={() => href.includes("/download/") && track("download-windows")}>{cta}</a>
           </Button>
         </div>
         <div>{visual}</div>

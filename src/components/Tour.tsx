@@ -2,6 +2,7 @@ import { Play } from "lucide-react";
 import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import { useI18n } from "@/i18n";
+import { track } from "@/lib/track";
 
 const base = import.meta.env.BASE_URL;
 
@@ -52,7 +53,10 @@ export function Tour() {
           ) : (
             <button
               type="button"
-              onClick={() => setPlaying(true)}
+              onClick={() => {
+                setPlaying(true);
+                track("play-tour");
+              }}
               aria-label={t.tour.play}
               className="group absolute inset-0 size-full cursor-pointer"
             >
